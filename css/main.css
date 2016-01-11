@@ -451,3 +451,9 @@ pre {
     color: #008080; }
   .highlight .il {
     color: #099; }
+
+@media only screen and (min-width: 481px) {
+  body {
+    padding-top: 24px;
+    padding-right: 24px;
+    padding-left: 24px; } }
