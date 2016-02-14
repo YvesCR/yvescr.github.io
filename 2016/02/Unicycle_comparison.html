@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>How to choose your electric unicycle/monowheel</title>
+    <meta name="description" content="Personnal web site of a data scientist. Statistic, data-visualisation and hacks. R code and soon python.
+">
+
+    <link rel="stylesheet" href="https://yvescr.github.io/css/main.css">
+    
+	
+	<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71940303-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  <body>
+
+    <header class="site-header">
+
+
+  <div class="wrapper">
+
+    <a class="site-title" href="https://yvescr.github.io/" >Data Laborer </a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+      </a>
+	
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="https://yvescr.github.io/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">How to choose your electric unicycle/monowheel</h1>
+    <p class="post-meta">Feb 13, 2016</p>
+  </header>
+
+  <article class="post-content">
+    <p>I live in London. With the same issues as most of the londoners, aka, a huge commute time. The classic way to beat it is to take a bike or to wake up earlier.</p>
+
+<p>Recently, I discovered another way to do it: the <a href="http://www.theairwheel.com/">electric unicycle/monowheel</a>. It’s a green way to commute and energy efficient.</p>
+
+<p>But as for any new product, there is not much reviews or feedback of the products. After a few time on the dedicated forums, I found <a href="https://docs.google.com/spreadsheets/d/1Zv1_fAAL3xKCGDEv64Rg7jpeim4oytbMx8mmXKUFThQ/edit?pref=2&amp;pli=1#gid=0">that spreadsheet</a>. It was out of date so I created a new one with the new products and the correct prices( as of 14 févr. 2016).</p>
+
+<p>The main parameter to take in account are the maximal speed, the weight, the autonomy and the price. The maximal speed should not be too low, but over 20 kph is useless. For the weight, the less weight is the better, as is the price (but bonus if it is made in UK). The autonomy is an important point as well, but I don’t plan to do trip of more than two hours.</p>
+
+<p>To get a first insight of what could be said on the internal properties of this product, I do a principal componant analysis.</p>
+
+<p><img src="https://yvescr.github.io/figure/source/2016-02-13-Unicycle_comparison/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
+
+<p>The first dimension separate the unicycles with high values of nearly all the variables from the unicycle with low values.</p>
+
+<p>The second dimension is a little bit more interesting. It separates wheel and weight from price/autonomy/wh. As autonomy and wh are related to the battery, it may suggest that <strong>most of the price of unicycles lies in the battery</strong>.</p>
+
+<p>Now that we know how the PCA separate the unicycle, let’s have a look at the brand on these scales.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">plot</span><span class="p">(</span><span class="n">res.pca</span><span class="p">,</span> <span class="n">choix</span> <span class="o">=</span> <span class="s2">"ind"</span><span class="p">,</span> <span class="n">habillage</span> <span class="o">=</span> <span class="m">8</span><span class="p">,</span> <span class="n">col.hab</span> <span class="o">=</span> <span class="m">8</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span>  <span class="s2">"quali"</span><span class="p">,</span> <span class="n">invisible</span> <span class="o">=</span> <span class="s2">"ind"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="https://yvescr.github.io/figure/source/2016-02-13-Unicycle_comparison/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
+
+<p>As we could see, we could find a brand for every need.</p>
+
+<p>For a model with a good autonomy but expensive, we could look at the Gotway and Lhotz.
+For a less expensive model, we could look for a Macwheel or a Fastwheel. But the autonomy will be according to the price.</p>
+
+<p>Now, the question we could ask is if there is, considering these brands, a brand which have lower prices than the others. For that, we do a regression of the price considering the others variables.</p>
+
+<p>The idea, here, is that if there is a brand which have lower prices than the others considering the others variables of the product.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">summary</span><span class="p">(</span><span class="n">res.lm</span> <span class="o">&lt;-</span> <span class="n">lm</span><span class="p">(</span><span class="n">price</span> <span class="o">~</span> <span class="n">autonomy</span> <span class="o">+</span> <span class="n">speed</span> <span class="o">+</span> <span class="n">weight</span> <span class="o">+</span> <span class="n">wheel</span> <span class="o">+</span> <span class="n">climb</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">comparison.norm</span><span class="p">))</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## 
+## Call:
+## lm(formula = price ~ autonomy + speed + weight + wheel + climb, 
+##     data = comparison.norm)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.10276 -0.36037 -0.03053  0.13781  3.08615 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept) -0.03724    0.10484  -0.355  0.72435   
+## autonomy     0.38463    0.12280   3.132  0.00328 **
+## speed        0.30000    0.12636   2.374  0.02260 * 
+## weight       0.12361    0.14583   0.848  0.40183   
+## wheel        0.14183    0.12303   1.153  0.25603   
+## climb       -0.07555    0.12281  -0.615  0.54203   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.6987 on 39 degrees of freedom
+##   (13 observations deleted due to missingness)
+## Multiple R-squared:  0.5672,	Adjusted R-squared:  0.5118 
+## F-statistic: 10.22 on 5 and 39 DF,  p-value: 2.589e-06</code></pre></figure>
+
+<p>The R^2^ obtained is of 0.5, which indicate a low fit of the price by the others variables.
+Autonomy and speed, both  related to the battery are significative variables.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">plot</span><span class="p">(</span><span class="n">res.lm</span><span class="p">,</span> <span class="n">which</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">))</span></code></pre></figure>
+
+<p><img src="https://yvescr.github.io/figure/source/2016-02-13-Unicycle_comparison/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" /> <img src="https://yvescr.github.io/figure/source/2016-02-13-Unicycle_comparison/unnamed-chunk-7-2.png" alt="plot of chunk unnamed-chunk-7" /> <img src="https://yvescr.github.io/figure/source/2016-02-13-Unicycle_comparison/unnamed-chunk-7-3.png" alt="plot of chunk unnamed-chunk-7" /> <img src="https://yvescr.github.io/figure/source/2016-02-13-Unicycle_comparison/unnamed-chunk-7-4.png" alt="plot of chunk unnamed-chunk-7" /></p>
+
+<p>Two outliers appear, here, rows 45 and 27.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">comparison.df</span><span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="m">45</span><span class="p">,</span> <span class="m">27</span><span class="p">),</span> <span class="o">-</span> <span class="n">c</span><span class="p">(</span><span class="m">11</span><span class="p">,</span> <span class="m">7</span><span class="p">,</span> <span class="m">5</span><span class="p">),</span> <span class="n">with</span> <span class="o">=</span> <span class="n">F</span><span class="p">]</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">##        brand model autonomy speed weight  wh charging.time price
+## 1: SOLOWHEEL  1500       12    18     12 132            NA  1890
+## 2: FIREWHEEL  F779      100    20     15 776            NA  1890
+##                             equipements.intégrés
+## 1:                                              
+## 2: Eclairage avant et arrière. Affichage digital
+##                              les.plus                    les.moins
+## 1:               Référence du marché. mini autonomie. Perf -, Prix
+## 2: Très bonne autonomie. Jolie design                  Poids. Prix
+##    wheel climb
+## 1:    16    15
+## 2:    16    20</code></pre></figure>
+
+<p>They are both overpriced looking at their capacities.
+The Solowheel 1500 especially is really expensive. The Firewheel have a huge price due to a huge battery, giving an impressive autonomy.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">summary</span><span class="p">(</span><span class="n">res.lm2</span> <span class="o">&lt;-</span> <span class="n">lm</span><span class="p">(</span><span class="n">price</span> <span class="o">~</span> <span class="n">autonomy</span> <span class="o">+</span> <span class="n">speed</span> <span class="o">+</span> <span class="n">weight</span> <span class="o">+</span> <span class="n">wheel</span> <span class="o">+</span> <span class="n">climb</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">comparison.norm</span><span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">(</span><span class="m">45</span><span class="p">,</span> <span class="m">27</span><span class="p">),</span> <span class="p">]))</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## 
+## Call:
+## lm(formula = price ~ autonomy + speed + weight + wheel + climb, 
+##     data = comparison.norm[-c(45, 27), ])
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.08254 -0.17646  0.00512  0.20551  1.04283 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -0.14851    0.07055  -2.105  0.04214 *  
+## autonomy     0.35793    0.10164   3.521  0.00116 ** 
+## speed        0.35158    0.08551   4.112  0.00021 ***
+## weight       0.15208    0.09537   1.595  0.11932    
+## wheel        0.03634    0.08138   0.447  0.65781    
+## climb       -0.02719    0.08031  -0.339  0.73683    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.4549 on 37 degrees of freedom
+##   (13 observations deleted due to missingness)
+## Multiple R-squared:  0.7361,	Adjusted R-squared:  0.7005 
+## F-statistic: 20.64 on 5 and 37 DF,  p-value: 8.475e-10</code></pre></figure>
+
+<p>Without these both outliers, the model is more performant, the R^2^ reaching 0.7.</p>
+
+<p>In the end, the best balanced models found are the Airwheel Q5 340 and the F-Wheel FL D5. These both are quite cheap and really performing. And the F-wheel have a really nice design. That model is definitely the one I recommand.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">comparison.df</span><span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">(</span><span class="m">45</span><span class="p">,</span> <span class="m">27</span><span class="p">),</span> <span class="o">-</span> <span class="n">c</span><span class="p">(</span><span class="m">11</span><span class="p">,</span> <span class="m">7</span><span class="p">,</span> <span class="m">5</span><span class="p">),</span> <span class="n">with</span> <span class="o">=</span> <span class="n">F</span><span class="p">][</span><span class="n">c</span><span class="p">(</span><span class="m">12</span><span class="p">,</span> <span class="m">23</span><span class="p">),</span> <span class="p">]</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">##       brand  model autonomy speed weight  wh charging.time price
+## 1: AIRWHEEL Q5 340       65    16   13.5 340            NA   715
+## 2:  F-WHEEL  FL D5       45    25   15.2 388            NA   751
+##                                           equipements.intégrés
+## 1:                                                            
+## 2: Trolley Eclairage avant. Affichage digital. Port USB. Appli
+##                                                   les.plus
+## 1:                      Aucun risque de perdre l'équilibre
+## 2: Autonomie. Vitesse. Joli design. % de pente élevé. Prix
+##                  les.moins wheel climb
+## 1:            Peu maniable    14    15
+## 2: Poids 12kg, moteur 400W    16    32</code></pre></figure>
+
+
+	
+	<div id="disqus_thread"></div>
+
+	<script>
+		/**
+		 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+		 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+		 */
+		/*
+		var disqus_config = function () {
+			this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+			this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+		};
+		*/
+		(function() {  // DON'T EDIT BELOW THIS LINE
+			var d = document, s = d.createElement('script');
+			
+			s.src = '//datalaborereu.disqus.com/embed.js';
+			
+			s.setAttribute('data-timestamp', +new Date());
+			(d.head || d.body).appendChild(s);
+		})();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+	<script id="dsq-count-scr" src="//datalaborereu.disqus.com/count.js" async></script>
+	
+  </article>
+
+</div>
+
+		
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Data Laborer</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Data Laborer</li>
+                    
+          <li>
+            <a href="https://twitter.com/swiftAmhe">
+              <span class="icon  icon--twitter">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
+                  c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+                </svg>
+              </span>
+
+              <span class="username">swiftAmhe</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/yvesCR">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">yvesCR</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Personnal web site of a data scientist. Statistic, data-visualisation and hacks. R code and soon python.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+	
+  </body>
+
+</html>
