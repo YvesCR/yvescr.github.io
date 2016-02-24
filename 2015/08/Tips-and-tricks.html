@@ -74,7 +74,7 @@
   <article class="post-content">
     <p>This is a set of tips and tricks to know when coding in R which aren’t for beginners but not as advanced as Hadley Wickham <a href="http://adv-r.had.co.nz/">advance-R</a>.</p>
 
-<p>The idea is to compile the best practice in R which increased my productivity in the last years and share them.</p>
+<p>The idea is to compile the best practise in R which increased my productivity in the last years and share them.</p>
 
 <h3> When working with Rstudio, one project = one folder </h3>
 
@@ -82,7 +82,7 @@
 
 <p>This is especially a good advice if you work on different projects or are used to have multiple session of R open at the same time.</p>
 
-<p>It allows to fastly close and open a project, as the session is saved, including the tab of your session and the data in your memory.
+<p>It allows to close and open a project fast, as the session is saved, including the tab of your session and the data in your memory.
 The only thing to take care is to have a light amount of data in memory. Otherwise, the project could take a while to close. If it becomes problematic, there is an option in Tools&gt;global options&gt;untick “always save history”</p>
 
 <p>Personally, I like organise my project in the following directory structure:
@@ -117,7 +117,7 @@ Project</p>
 
 <p>The data.table is The package which allow me to consider R as a software which could be used as equal to SAS (at least in marketing studies).</p>
 
-<p>The concepts could be tough at the beginning, but after a few time of practice, your productivity is multiplied.</p>
+<p>The concepts could be tough at the beginning, but after a few time of practise, your productivity is multiplied.</p>
 
 <p>The data.table allows, among others:</p>
 <ul type="circle">
@@ -184,11 +184,11 @@ For more, read the introduction: (10 min here: <a href="https://github.com/Rdata
 ## 4: Very Good 0.044% 0.041% 0.063% 0.035% 0.033% 0.021% 12082
 ## 5:      Fair 0.038% 0.071% 0.066% 0.048% 0.047% 0.047%  1610</code></pre></figure>
 
-<p>This is only a glipse of what could be done with the data.table packages. Basically, all I used to do in SQL before, I now do it with data.table.</p>
+<p>This is only a glimpse of what could be done with the data.table packages. Basically, all I used to do in SQL before, I now do it with data.table.</p>
 
 <h3> Mastering ggplot2 </h3>
 
-<p>A good way to aprehend a set of data is to use data visualisation.
+<p>A good way to apprehend a set of data is to use data visualisation.
 The ggplot2 package allow, when mastered, to do highly customised graph. Even <a href="https://xkcd.com/519/">XKCD-like</a> ones (In this case, replace perl by ggplot2).</p>
 
 <p>The <a href="http://docs.ggplot2.org/current/">official documentation</a> is well made, but for beginners, <a href="http://zevross.com/blog/2014/08/04/beautiful-plotting-in-r-a-ggplot2-cheatsheet-3/">this excellent blog</a> is more appropriate.</p>
@@ -215,7 +215,7 @@ The ggplot2 package allow, when mastered, to do highly customised graph. Even <a
 <li> It is better to plot already reshaped data, as plotting more than 10000 points could be slow and probably useless.  </li>
 </ul>
 
-<p>When doing an analysis, it is important to keep a track of whatever process you went through. Saving your graphs is a good practice and the ggsave function allows you to do so.</p>
+<p>When doing an analysis, it is important to keep a track of whatever process you went through. Saving your graphs is a good practise and the ggsave function allows you to do so.</p>
 
 <p>Generally, I plot and save the distribution of all the main variables plus the multivariate distributions which could be interesting.</p>
 
@@ -248,9 +248,9 @@ The ggplot2 package allow, when mastered, to do highly customised graph. Even <a
 
 <p>I used SAS for a while and really liked the concept of macro, which allow to generate piece of code.</p>
 
-<p>In R, the concept of function is a good replacement of the concept of macro. But not everything which is possible with a macro is possibble with a function.</p>
+<p>In R, the concept of function is a good replacement of the concept of macro. But not everything which is possible with a macro is possible with a function.</p>
 
-<p>One exemple of difficulties I get was, for a shiny app, to modify the ui part. the function renderUI is good but make your app unecessary messy.</p>
+<p>One exemple of difficulties I get was, for a shiny app, to modify the ui part. the function renderUI is good but make your app unnecessary messy.</p>
 
 <p>The brew package is made to create report and text from a template.</p>
 
@@ -260,7 +260,7 @@ The ggplot2 package allow, when mastered, to do highly customised graph. Even <a
 
 <figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">brew</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">stdin</span><span class="p">(),</span> <span class="n">output</span><span class="o">=</span><span class="n">stdout</span><span class="p">(),</span> <span class="k">...</span><span class="p">)</span></code></pre></figure>
 
-<p>With stdin() a template file or a connection and 1 the file to generate or a connection.</p>
+<p>With stdin() a template file or a connection and stdout() the file to generate or a connection.</p>
 
 	
 	<div id="disqus_thread"></div>
