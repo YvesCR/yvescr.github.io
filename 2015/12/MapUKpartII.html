@@ -74,15 +74,15 @@
   </header>
 
   <article class="post-content">
-    <p>In the first part, we get a nice tool of visualisation of the district postcode area, a chloropeth Map.</p>
+    <p>In the first part, we get a nice tool of visualisation of the district post code area, a chloropeth Map.</p>
 
 <p>Now, I want to do some real analysis on the districts.</p>
 
 <p>In the first part, I have calculated the area of the UK districts.</p>
 
-<p>Crawling on the british statistic national office, I found a table with the population at the district postcode level. At this level of accuracy, only a few metrics are available. But having the area and the population, I could calculate the density.</p>
+<p>Crawling on the British statistic national office, I found a table with the population at the district post code level. At this level of accuracy, only a few metrics are available. But having the area and the population, I could calculate the density.</p>
 
-<p>Before to go further, a first mapping of these data show huge inconstency looking at places I would expect highly populated.
+<p>Before to go further, a first mapping of these data show huge inconstancy looking at places I would expect highly populated.
 For exemple, Central London shows a low density, where I would expect a high density. The perfect exemple is the number of inhabitants in EC1A, 878 in 2011. This number is highly surprising.
 Consequently, what I represent here is not the reality, it is the snapshot captured in the data, made by  humans and as such could be far from the reality.</p>
 
@@ -106,11 +106,11 @@ Consequently, what I represent here is not the reality, it is the snapshot captu
 
 <p>A bigger one (45 Mb) could be found with the code to produce it in my github account, <a href="https://github.com/YvesCR/blog/blob/gh-pages/image/Big_UK_Density_cluster_Plot.png">here</a>.</p>
 
-<p>The code to produce the map could be found there as well. I tried to plot a map so detailled that you could zoom to distinguish the most tiny postcode area, like EC1 in central London.</p>
+<p>The code to produce the map could be found there as well. I tried to plot a map so detailed that you could zoom to distinguish the most tiny post code area, like EC1 in central London.</p>
 
 <h1 id="further-analysis">Further Analysis</h1>
 
-<p>Even considering that the data in the most dense area is biased, it is still posible to analisys this data set. Here, I will do a spatial clustering of the districts looking at the density.</p>
+<p>Even considering that the data in the most dense area is biassed, it is still possible to analysis this data set. Here, I will do a spatial clustering of the districts looking at the density.</p>
 
 <p>To have a coherent cluster, I took the logarithm of the density, as the density goes from 0 to 400K people per km2.</p>
 
@@ -119,9 +119,9 @@ Consequently, what I represent here is not the reality, it is the snapshot captu
 <p>My first attempt with k-means showed a really low resilience of the clustering looking at the initial points and the seed.
 To counter that effect, I tried a bagging k-means cluster, which didn’t created nice looking region.</p>
 
-<p>In the end, I choosed a simple hierarchical cluster with the ward measure.</p>
+<p>In the end, I choose a simple hierarchical cluster with the ward measure.</p>
 
-<p>We took the mean of the coordinates which make the polygon of the district as the center of the district. It introduces some bias in direction of the most accidented side of the district, but it is enough for what I want to achieve.</p>
+<p>We took the mean of the coordinates which make the polygon of the district as the centre of the district. It introduces some bias in direction of the most accidented side of the district, but it is enough for what I want to achieve.</p>
 
 <p>With a final number of cluster of 15, it is possible to define new British regions based on the density of population.</p>
 
@@ -162,7 +162,7 @@ To counter that effect, I tried a bagging k-means cluster, which didn’t create
 
 <h1 id="conclusion">Conclusion</h1>
 
-<p>In the end, it is really easy to create new regions and to make really accurate clusters of district. The question of the small number of inhabitants in central London is definitely weird and appeal new analysis, looking for exemple at the number of offices and houses. If a majority of the constructions are offices, the mistery would be resolved. Otherwise, in spite of the tremendous amount of activity, these part of London could be nicknamed as “the ghost town”.</p>
+<p>In the end, it is really easy to create new regions and to make really accurate clusters of district. The question of the small number of inhabitants in central London is definitely weird and appeal new analysis, looking for exemple at the number of offices and houses. If a majority of the constructions are offices, the mystery would be resolved. Otherwise, in spite of the tremendous amount of activity, these part of London could be nicknamed as “the ghost town”.</p>
 
 	
 	<div id="disqus_thread"></div>
