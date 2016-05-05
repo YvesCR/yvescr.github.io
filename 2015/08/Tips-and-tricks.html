@@ -10,7 +10,7 @@
     <meta name="description" content="Personnal web site of a data scientist. Statistic, data-visualisation and hacks. R code and soon python.
 ">
 
-    <link rel="stylesheet" href="https://yvescr.github.io/css/main.css">
+    <link rel="stylesheet" href="http://yvescr.github.io/css/main.css">
     
 	
 	<script type="text/javascript"
@@ -36,7 +36,7 @@
 
   <div class="wrapper">
 
-    <a class="site-title" href="https://yvescr.github.io/" >Data Laborer </a>
+    <a class="site-title" href="http://yvescr.github.io/" >Data Laborer </a>
 
     <nav class="site-nav">
       <a href="#" class="menu-icon">
@@ -45,7 +45,7 @@
       <div class="trigger">
         
           
-          <a class="page-link" href="https://yvescr.github.io/about/">About</a>
+          <a class="page-link" href="http://yvescr.github.io/about/">About</a>
           
         
           
@@ -74,7 +74,7 @@
   <article class="post-content">
     <p>This is a set of tips and tricks to know when coding in R which aren’t for beginners but not as advanced as Hadley Wickham <a href="http://adv-r.had.co.nz/">advance-R</a>.</p>
 
-<p>The idea is to compile the best practise in R which increased my productivity in the last years and share them.</p>
+<p>The idea is to compile the best practice in R which increased my productivity in the last years and share them.</p>
 
 <h3> When working with Rstudio, one project = one folder </h3>
 
@@ -82,7 +82,7 @@
 
 <p>This is especially a good advice if you work on different projects or are used to have multiple session of R open at the same time.</p>
 
-<p>It allows to close and open a project fast, as the session is saved, including the tab of your session and the data in your memory.
+<p>It allows to fastly close and open a project, as the session is saved, including the tab of your session and the data in your memory.
 The only thing to take care is to have a light amount of data in memory. Otherwise, the project could take a while to close. If it becomes problematic, there is an option in Tools&gt;global options&gt;untick “always save history”</p>
 
 <p>Personally, I like organise my project in the following directory structure:
@@ -117,7 +117,7 @@ Project</p>
 
 <p>The data.table is The package which allow me to consider R as a software which could be used as equal to SAS (at least in marketing studies).</p>
 
-<p>The concepts could be tough at the beginning, but after a few time of practise, your productivity is multiplied.</p>
+<p>The concepts could be tough at the beginning, but after a few time of practice, your productivity is multiplied.</p>
 
 <p>The data.table allows, among others:</p>
 <ul type="circle">
@@ -184,11 +184,11 @@ For more, read the introduction: (10 min here: <a href="https://github.com/Rdata
 ## 4: Very Good 0.044% 0.041% 0.063% 0.035% 0.033% 0.021% 12082
 ## 5:      Fair 0.038% 0.071% 0.066% 0.048% 0.047% 0.047%  1610</code></pre></figure>
 
-<p>This is only a glimpse of what could be done with the data.table packages. Basically, all I used to do in SQL before, I now do it with data.table.</p>
+<p>This is only a glipse of what could be done with the data.table packages. Basically, all I used to do in SQL before, I now do it with data.table.</p>
 
 <h3> Mastering ggplot2 </h3>
 
-<p>A good way to apprehend a set of data is to use data visualisation.
+<p>A good way to aprehend a set of data is to use data visualisation.
 The ggplot2 package allow, when mastered, to do highly customised graph. Even <a href="https://xkcd.com/519/">XKCD-like</a> ones (In this case, replace perl by ggplot2).</p>
 
 <p>The <a href="http://docs.ggplot2.org/current/">official documentation</a> is well made, but for beginners, <a href="http://zevross.com/blog/2014/08/04/beautiful-plotting-in-r-a-ggplot2-cheatsheet-3/">this excellent blog</a> is more appropriate.</p>
@@ -215,7 +215,7 @@ The ggplot2 package allow, when mastered, to do highly customised graph. Even <a
 <li> It is better to plot already reshaped data, as plotting more than 10000 points could be slow and probably useless.  </li>
 </ul>
 
-<p>When doing an analysis, it is important to keep a track of whatever process you went through. Saving your graphs is a good practise and the ggsave function allows you to do so.</p>
+<p>When doing an analysis, it is important to keep a track of whatever process you went through. Saving your graphs is a good practice and the ggsave function allows you to do so.</p>
 
 <p>Generally, I plot and save the distribution of all the main variables plus the multivariate distributions which could be interesting.</p>
 
@@ -248,9 +248,9 @@ The ggplot2 package allow, when mastered, to do highly customised graph. Even <a
 
 <p>I used SAS for a while and really liked the concept of macro, which allow to generate piece of code.</p>
 
-<p>In R, the concept of function is a good replacement of the concept of macro. But not everything which is possible with a macro is possible with a function.</p>
+<p>In R, the concept of function is a good replacement of the concept of macro. But not everything which is possible with a macro is possibble with a function.</p>
 
-<p>One exemple of difficulties I get was, for a shiny app, to modify the ui part. the function renderUI is good but make your app unnecessary messy.</p>
+<p>One exemple of difficulties I get was, for a shiny app, to modify the ui part. the function renderUI is good but make your app unecessary messy.</p>
 
 <p>The brew package is made to create report and text from a template.</p>
 
@@ -260,7 +260,7 @@ The ggplot2 package allow, when mastered, to do highly customised graph. Even <a
 
 <figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">brew</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">stdin</span><span class="p">(),</span> <span class="n">output</span><span class="o">=</span><span class="n">stdout</span><span class="p">(),</span> <span class="k">...</span><span class="p">)</span></code></pre></figure>
 
-<p>With stdin() a template file or a connection and stdout() the file to generate or a connection.</p>
+<p>With stdin() a template file or a connection and 1 the file to generate or a connection.</p>
 
 	
 	<div id="disqus_thread"></div>
@@ -285,7 +285,7 @@ The ggplot2 package allow, when mastered, to do highly customised graph. Even <a
 			(d.head || d.body).appendChild(s);
 		})();
 	</script>
-	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 
 	<script id="dsq-count-scr" src="//datalaborereu.disqus.com/count.js" async></script>
 	
@@ -313,7 +313,7 @@ The ggplot2 package allow, when mastered, to do highly customised graph. Even <a
         <ul class="social-media-list">
           
           <li>
-            <a href="https://github.com/yvesCR">
+            <a href="http://github.com/yvesCR">
               <span class="icon  icon--github">
                 <svg viewBox="0 0 16 16">
                   <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
