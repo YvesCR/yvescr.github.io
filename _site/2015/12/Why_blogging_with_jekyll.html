@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Why I moved to a jekyll blog</title>
+    <meta name="description" content="Personnal web site of a data scientist. Statistic, data-visualisation and hacks. R code and soon python.
+">
+
+    <link rel="stylesheet" href="http://yvescr.github.io/css/main.css">
+    
+	
+	<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71940303-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  <body>
+
+    <header class="site-header">
+
+
+  <div class="wrapper">
+
+    <a class="site-title" href="http://yvescr.github.io/" >Data Laborer </a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+      </a>
+	
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="http://yvescr.github.io/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Why I moved to a jekyll blog</h1>
+    <p class="post-meta">Dec 21, 2015</p>
+  </header>
+
+  <article class="post-content">
+    <p>Last year, I began this blog using wordpress and ended not really satisfied. Mainly for two reason:</p>
+
+<ul>
+  <li>I can’t include javascript in my posts, including the js produced by the functions of the <code class="highlighter-rouge">htmlwidgets</code> package.</li>
+  <li>I wasn’t able to display on my blog the correct rmarkdown syntax color for my code.</li>
+</ul>
+
+<p>After a few research, I decided to move to a jekyll blog, and to use the trio jekyll + rmarkdown + github.</p>
+
+<p>The combination of jekyll, rmarkdown and github allows to create a nice blog, totally customisable and totally free, as the blog could be freely hosted on github.</p>
+
+<p>It is hard to begin from 0. And thanks to <a href="https://github.com/yihui/knitr-jekyll">Yihui Xie</a>, a template exist.</p>
+
+<p>In a couple of click, it is possible to have a template to work on. And with a little bit of head scratching, it is possible to customise it up to your wishes.</p>
+
+<h2 id="jekyll">Jekyll</h2>
+
+<p>What is <a href="https://jekyllrb.com/">jekyll</a>? Jekyll is a generator of static websites and blogs.</p>
+
+<p>How does it works?</p>
+
+<ul>
+  <li>Write your article in markdown or html format.</li>
+  <li>In the header, add the title, date, description, tags, categories, etc.</li>
+  <li>Put the file in the _posts folder.</li>
+  <li>Execute jekyll. Jekyll test all the files in the _posts folders and when one is modified, convert the file in the final post.
+    <ul>
+      <li>Add to the index page the link to the modified/new post.</li>
+      <li>Add to the original source post the widgets, tags, categories, etc.</li>
+    </ul>
+  </li>
+  <li>The new post is copied in the destination folder, which is your generated blog.</li>
+</ul>
+
+<h2 id="r-markdown">R markdown</h2>
+
+<p><a href="http://rmarkdown.rstudio.com/">R markdown</a> is a way to include chunks of R code into a markdown document.</p>
+
+<p>In the <code class="highlighter-rouge">servr</code> package, the <code class="highlighter-rouge">jekyll()</code> function allows to sets up a web server to serve a jekyll-based website:</p>
+
+<p>With jekyll and R markdown, the update process is different:</p>
+
+<ul>
+  <li>Execute <code class="highlighter-rouge">jekyll()</code>.</li>
+  <li>Write your article in a .rmd format.</li>
+  <li>Put your .rmd article in the _source folder.</li>
+  <li>The article is automatically compiled using rmarkdown, creating a .md file in the _posts folder.</li>
+  <li>Jekyll convert the .md to the final post format.</li>
+</ul>
+
+<p>The result could be seen in the web browser automatically refreshed, which make the writing process really easy.</p>
+
+<h2 id="github">Github</h2>
+
+<p>One great thing with jekyll is that it is possible to host your web site on github.</p>
+
+<p>How Github cooperate with R markdown and Jekyll?</p>
+
+<p>Simply coordinate the static website folder with a github repositery. Then parametise this repositery to be  on a gh-pages branch, et voila!, you could see your website.</p>
+
+<p>In the end, updating the blog is as easy as write a .rmd file and coordinate the generated result to github.</p>
+
+<h2 id="issues">Issues</h2>
+
+<p>In the end, the main issue I get is when it comes to write formulas. To display formulas, I have to knit the .Rmd and manually add the YAML Front Matter in the html page. But otherwise, all is automated.</p>
+
+<p>I didn’t found that much websites made that way. But a few people have made similar articles. Among them:</p>
+
+<ul>
+  <li><a href="http://brendanrocks.com/blogging-with-rmarkdown-knitr-jekyll/">Brendan Rocks</a></li>
+  <li><a href="https://nicolewhite.github.io/2015/02/07/r-blogging-with-rmarkdown-knitr-jekyll.html">Nicole White</a></li>
+  <li><a href="http://www.njtierney.com/jekyll/2015/11/11/how-i-built-my-site/">Nicholas Tierney</a></li>
+  <li><a href="http://nicolashery.com/fast-mobile-friendly-website-with-jekyll/">Nicolas Hery</a></li>
+  <li><a href="http://joshualande.com/jekyll-github-pages-poole/">Joshua Lande</a></li>
+  <li><a href="https://ialsa.github.io/tutorials/gh-pages-setup.html">IALSA tutorial website</a></li>
+</ul>
+
+
+	
+	<div id="disqus_thread"></div>
+
+	<script>
+		/**
+		 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+		 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+		 */
+		/*
+		var disqus_config = function () {
+			this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+			this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+		};
+		*/
+		(function() {  // DON'T EDIT BELOW THIS LINE
+			var d = document, s = d.createElement('script');
+			
+			s.src = '//datalaborereu.disqus.com/embed.js';
+			
+			s.setAttribute('data-timestamp', +new Date());
+			(d.head || d.body).appendChild(s);
+		})();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+	<script id="dsq-count-scr" src="//datalaborereu.disqus.com/count.js" async></script>
+	
+  </article>
+
+</div>
+
+		
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Data Laborer</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li> <a href="http://data-laborer.eu">Data Laborer   </a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="http://github.com/yvesCR">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">yvesCR</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Personnal web site of a data scientist. Statistic, data-visualisation and hacks. R code and soon python.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+	
+  </body>
+
+</html>
