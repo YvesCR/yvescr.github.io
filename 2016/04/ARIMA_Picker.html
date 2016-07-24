@@ -89,32 +89,32 @@ Otherwise, you still could enjoy the <code class="highlighter-rouge">arimaUI</co
 
 <p>To install the add-in:</p>
 
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">devtools</span><span class="p">)</span>
-<span class="n">install_github</span><span class="p">(</span><span class="s2">"YvesCR/arimaUI"</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">devtools</span><span class="p">)</span><span class="w">
+</span><span class="n">install_github</span><span class="p">(</span><span class="s2">"YvesCR/arimaUI"</span><span class="p">)</span></code></pre></figure>
 
 <p>The best way to familiarize yourself with the function is to play with it.
 For exemple by simulating in a blind way the components of your time serie:</p>
 
 <figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># simulation of the components (p, d, q). 
-</span><span class="n">order.blind</span> <span class="o">&lt;-</span> <span class="n">floor</span><span class="p">(</span><span class="n">runif</span><span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">3</span><span class="p">))</span>
+</span><span class="n">order.blind</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">floor</span><span class="p">(</span><span class="n">runif</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">))</span><span class="w">
 
-<span class="c1"># For ARIMA models with differencing, the differenced series follows a zero-mean ARMA model
-</span><span class="k">if</span><span class="p">(</span><span class="n">order.blind</span><span class="p">[</span><span class="m">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="m">0</span><span class="p">)</span> <span class="n">order.blind</span><span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="m">0</span>
+</span><span class="c1"># For ARIMA models with differencing, the differenced series follows a zero-mean ARMA model
+</span><span class="k">if</span><span class="p">(</span><span class="n">order.blind</span><span class="p">[</span><span class="m">2</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="n">order.blind</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0</span><span class="w">
 
-<span class="c1"># simulation of the parameters
-</span><span class="n">ar.blind</span> <span class="o">&lt;-</span> <span class="n">runif</span><span class="p">(</span><span class="n">order.blind</span><span class="p">[</span><span class="m">1</span><span class="p">],</span> <span class="m">-1</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
-<span class="n">ma.blind</span> <span class="o">&lt;-</span> <span class="n">runif</span><span class="p">(</span><span class="n">order.blind</span><span class="p">[</span><span class="m">3</span><span class="p">],</span> <span class="m">-1</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+</span><span class="c1"># simulation of the parameters
+</span><span class="n">ar.blind</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">runif</span><span class="p">(</span><span class="n">order.blind</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+</span><span class="n">ma.blind</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">runif</span><span class="p">(</span><span class="n">order.blind</span><span class="p">[</span><span class="m">3</span><span class="p">],</span><span class="w"> </span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
 
-<span class="c1"># below 50 points, finding the correct components is challenging.
-</span><span class="n">sim.ts</span> <span class="o">&lt;-</span> <span class="n">arima.sim</span><span class="p">(</span>
-<span class="n">n</span> <span class="o">=</span> <span class="m">100</span><span class="p">,</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span>
-  <span class="n">order</span> <span class="o">=</span> <span class="n">order.blind</span><span class="p">,</span>
-  <span class="n">ar</span> <span class="o">=</span> <span class="n">ar.blind</span>
-<span class="p">,</span> <span class="n">ma</span> <span class="o">=</span> <span class="n">ma.blind</span>
-<span class="p">))</span>
+</span><span class="c1"># below 50 points, finding the correct components is challenging.
+</span><span class="n">sim.ts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">arima.sim</span><span class="p">(</span><span class="w">
+</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w">
+</span><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+  </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">order.blind</span><span class="p">,</span><span class="w">
+  </span><span class="n">ar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ar.blind</span><span class="w">
+</span><span class="p">,</span><span class="w"> </span><span class="n">ma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ma.blind</span><span class="w">
+</span><span class="p">))</span><span class="w">
 
-<span class="n">list.res</span> <span class="o">&lt;-</span> <span class="n">arimaUI</span><span class="p">(</span><span class="n">sim.ts</span><span class="p">)</span></code></pre></figure>
+</span><span class="n">list.res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">arimaUI</span><span class="p">(</span><span class="n">sim.ts</span><span class="p">)</span></code></pre></figure>
 
 <p>If the numbers of the components that you pick in the end is equal to the ones which had been randomly selected, you are truly skilled, congratulations.</p>
 
