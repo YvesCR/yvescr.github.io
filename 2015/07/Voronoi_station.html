@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Furthest point from the subway in London with Voronoi</title>
+    <meta name="description" content="Personnal web site of a data scientist. Statistic, data-visualisation and hacks. R code and soon python.
+">
+
+    <link rel="stylesheet" href="http://yvescr.github.io/css/main.css">
+    
+	
+	<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71940303-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  <body>
+
+    <header class="site-header">
+
+
+  <div class="wrapper">
+
+    <a class="site-title" href="http://yvescr.github.io/" >Data Laborer </a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+      </a>
+	
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="http://yvescr.github.io/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Furthest point from the subway in London with Voronoi</h1>
+    <p class="post-meta">Jul 16, 2015</p>
+  </header>
+
+  <article class="post-content">
+    <p>A question was uplifted at the last R coding dojo. What is the location in central London which is the furthest from the subway?</p>
+
+<p>The first bit of code of this question was made at the LondonR coding dojo, here:</p>
+
+<p>https://github.com/London-R-Dojo/Dojo-repo/tree/master/July-2015-Dojo</p>
+
+<p>Two approach was used to reply to this question:</p>
+
+<p>-Mapping the point depending on the distance from the subway</p>
+
+<p>-Using Voronoi diagram to analytically determine the furthest point.</p>
+
+<p>The first approach produced a really nice plot of London when the second approach failed to pass the question of the border of an area,</p>
+
+<p>In this blog post, I try to override this issue.</p>
+
+<h1> Method </h1>
+
+<p>In the alphahull package, the ashape function allow to create a close constraint, based on voronoi. It allow to calculate both the constraint and the voronoi vertices.</p>
+
+<p>The function pnt.in.poly of the SDMTools allow to flag the voronoi vertices which are inside the constraint.</p>
+
+<p>Combining both, allow me to create a constraint voronoi diagram in which I could look for the point the furthest from any subway station.</p>
+
+<p><img src="http://yvescr.github.io/image/London.gif" alt="london gif " /></p>
+
+<h1> The code </h1>
+
+<h3> Libraries, data, raw map </h3>
+
+<p>Coordinates of stations could be found on the TFL website.
+The function get_map() allows to plot a map in a really efficient way and quite fast.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">ggmap</span><span class="p">)</span>
+<span class="n">library</span><span class="p">(</span><span class="n">alphahull</span><span class="p">)</span>
+<span class="n">library</span><span class="p">(</span><span class="n">SDMTools</span><span class="p">)</span> 
+<span class="n">library</span><span class="p">(</span><span class="n">devtools</span><span class="p">)</span>
+<span class="n">library</span><span class="p">(</span><span class="n">animation</span><span class="p">)</span> <span class="c1"># install.packages("animation")
+</span><span class="n">library</span><span class="p">(</span><span class="n">ImageMagick</span><span class="p">)</span> <span class="c1">#install_github("ImageMagick")
+# load the libraries:
+</span><span class="n">l</span> <span class="o">&lt;-</span> <span class="n">lapply</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="s2">"data.table"</span><span class="p">,</span> <span class="s2">"alphahull"</span><span class="p">,</span> <span class="s2">"ggmap"</span><span class="p">,</span> <span class="s2">"SDMTools"</span><span class="p">,</span> <span class="s2">"sp"</span><span class="p">),</span> <span class="n">require</span><span class="p">,</span> <span class="n">character.only</span> <span class="o">=</span> <span class="n">T</span><span class="p">)</span>
+
+  <span class="c1"># First, get the data:
+</span><span class="n">coord.station</span> <span class="o">&lt;-</span> <span class="n">fread</span><span class="p">(</span><span class="s2">"tfl.stations.csv"</span><span class="p">)</span>
+
+  <span class="c1"># Get the map of London:
+</span><span class="n">london12</span> <span class="o">&lt;-</span> <span class="n">get_map</span><span class="p">(</span><span class="n">location</span> <span class="o">=</span> <span class="s2">"London"</span><span class="p">,</span> <span class="n">zoom</span> <span class="o">=</span> <span class="m">12</span><span class="p">)</span>
+<span class="n">zones.london.plot12</span> <span class="o">&lt;-</span> <span class="n">ggmap</span><span class="p">(</span><span class="n">london12</span><span class="p">,</span> <span class="n">maprange</span> <span class="o">=</span> <span class="n">F</span><span class="p">)</span> 
+
+  <span class="c1"># only zones 1 &amp; inside the plot:
+</span><span class="n">coord.station</span><span class="p">[,</span> <span class="n">zone2</span> <span class="o">:=</span> <span class="n">ifelse</span><span class="p">(</span><span class="n">type</span> <span class="o">==</span> <span class="s2">"dlr"</span><span class="p">,</span> <span class="s2">"dlr"</span><span class="p">,</span> <span class="n">zone</span><span class="p">)</span> <span class="p">]</span>
+<span class="n">coord.station.min</span> <span class="o">&lt;-</span> <span class="n">coord.station</span><span class="p">[</span><span class="n">zone</span> <span class="o">==</span> <span class="m">1</span><span class="p">,</span> <span class="n">list</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">zone2</span><span class="p">)]</span>
+
+  <span class="c1"># plot stations
+</span><span class="n">zones.london</span> <span class="o">&lt;-</span> <span class="n">zones.london.plot12</span> <span class="o">+</span>
+          <span class="n">geom_point</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">coord.station.min</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">lon</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">lat</span><span class="p">,</span> <span class="n">colour</span> <span class="o">=</span> <span class="n">as.factor</span><span class="p">(</span><span class="n">zone2</span><span class="p">)),</span> <span class="n">size</span> <span class="o">=</span> <span class="m">1.5</span><span class="p">)</span> <span class="o">+</span>
+          <span class="n">scale_colour_discrete</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Zone"</span><span class="p">)</span></code></pre></figure>
+
+<h3> Voronoi &amp; constraint calculation </h3>
+
+<p>The alpha parameter control the alpha-shape. The smallest the value, the more complicated the constraint.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r">  <span class="c1"># voronoi and constraint:
+</span><span class="n">alphashape</span> <span class="o">&lt;-</span> <span class="n">ashape</span><span class="p">(</span><span class="n">coord.station.min</span><span class="o">$</span><span class="n">lon</span><span class="p">,</span> <span class="n">coord.station.min</span><span class="o">$</span><span class="n">lat</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="m">0.021</span><span class="p">)</span>
+
+  <span class="c1"># voronoi summits:
+</span><span class="n">voronoi.full</span> <span class="o">&lt;-</span> <span class="n">data.table</span><span class="p">(</span><span class="n">alphashape</span><span class="o">$</span><span class="n">delvor.obj</span><span class="o">$</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">polygon.ext</span> <span class="o">&lt;-</span> <span class="n">data.frame</span><span class="p">(</span><span class="n">alphashape</span><span class="o">$</span><span class="n">edges</span><span class="p">)</span>
+
+<span class="c1"># plot the voronoi diagram without constraint:
+</span><span class="n">plot.no.map.voronoi</span> <span class="o">&lt;-</span> <span class="n">zones.london</span> <span class="o">+</span>
+  <span class="n">geom_segment</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">voronoi.full</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">mx1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">my1</span><span class="p">,</span> <span class="n">xend</span> <span class="o">=</span> <span class="n">mx2</span><span class="p">,</span> <span class="n">yend</span> <span class="o">=</span> <span class="n">my2</span><span class="p">),</span> <span class="n">colour</span> <span class="o">=</span> <span class="s2">"red"</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="m">0.25</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">geom_segment</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">polygon.ext</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">y1</span><span class="p">,</span> <span class="n">xend</span> <span class="o">=</span> <span class="n">x2</span><span class="p">,</span> <span class="n">yend</span> <span class="o">=</span> <span class="n">y2</span><span class="p">),</span> <span class="n">colour</span> <span class="o">=</span> <span class="s2">"blue"</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="m">0.25</span><span class="p">)</span>
+<span class="n">plot.no.map.voronoi</span></code></pre></figure>
+
+<p><img src="/blog/figure/source/2015-07-16-Voronoi_station/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" /></p>
+
+<p>Now, we have the constraint and the voronoi diagram on all the subways station of the zone 1.</p>
+
+<h3> Keep the voronoi summits inside the constraint </h3>
+
+<p>As I want only the voronoi summit inside the constraint, I use the function pnt.in.poly to flag summit outside the constraint.</p>
+
+<p>The function take only the ordered summit of the constraint as the polygon. The first loop allow to reorder the summits.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"> <span class="c1">## problem: voronoi summit are outside the polygon.
+</span>  <span class="c1">#we are looking for the voronoi summits which are inside the polygon.
+</span>  <span class="c1"># our issue here is that the function pnt.in.polygon need an ordered table of the summit.
+</span>  <span class="c1"># And the function alphahull release an unordered set of points.
+</span>
+  <span class="c1"># voronoi summits:
+</span><span class="n">voronoi.summit</span> <span class="o">&lt;-</span> <span class="n">unique</span><span class="p">(</span><span class="n">rbind</span><span class="p">(</span><span class="n">voronoi.full</span><span class="p">[,</span> <span class="n">list</span><span class="p">(</span><span class="n">mx1</span><span class="p">,</span> <span class="n">my1</span><span class="p">)],</span> <span class="n">voronoi.full</span><span class="p">[,</span> <span class="n">list</span><span class="p">(</span><span class="n">mx2</span><span class="p">,</span> <span class="n">my2</span><span class="p">)],</span> <span class="n">use.names</span> <span class="o">=</span> <span class="n">F</span><span class="p">))</span>
+
+  <span class="c1"># do a channel with the variables ind1 et ind2:
+</span><span class="n">nb.edges</span> <span class="o">&lt;-</span> <span class="n">dim</span><span class="p">(</span><span class="n">polygon.ext</span><span class="p">)[</span><span class="m">1</span><span class="p">]</span>
+  
+  <span class="c1"># initialisation of the table:
+</span><span class="n">order</span> <span class="o">&lt;-</span> <span class="n">data.frame</span><span class="p">(</span><span class="n">order</span> <span class="o">=</span> <span class="n">rep</span><span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="n">nb.edges</span><span class="p">),</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">rep</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="n">nb.edges</span><span class="p">),</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">rep</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="n">nb.edges</span><span class="p">),</span> <span class="n">stringsAsFactors</span> <span class="o">=</span> <span class="n">F</span><span class="p">)</span>
+
+  <span class="c1"># new table to modify:
+</span><span class="n">polygon.ext2</span> <span class="o">&lt;-</span> <span class="n">polygon.ext</span>
+
+<span class="n">order</span><span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="p">]</span> <span class="o">&lt;-</span> <span class="n">polygon.ext2</span><span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="n">c</span><span class="p">(</span><span class="s2">"ind1"</span><span class="p">,</span> <span class="s2">"x1"</span><span class="p">,</span> <span class="s2">"y1"</span><span class="p">)]</span>
+<span class="n">polygon.ext2</span> <span class="o">&lt;-</span> <span class="n">polygon.ext2</span><span class="p">[</span><span class="m">-1</span><span class="p">,</span> <span class="p">]</span>
+  
+  <span class="c1"># loop through the summits to select each time the next one:
+</span><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="m">2</span><span class="o">:</span> <span class="n">nb.edges</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># i &lt;- 2
+</span>  <span class="k">if</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="m">-1</span><span class="p">,</span> <span class="m">1</span><span class="p">]</span> <span class="o">%</span><span class="k">in</span><span class="o">%</span> <span class="n">polygon.ext2</span><span class="o">$</span><span class="n">ind1</span><span class="p">)</span> <span class="p">{</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">]</span> <span class="o">&lt;-</span> <span class="n">polygon.ext2</span><span class="p">[</span><span class="n">which</span><span class="p">(</span><span class="n">polygon.ext2</span><span class="o">$</span><span class="n">ind1</span> <span class="o">==</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="m">-1</span><span class="p">,</span> <span class="m">1</span><span class="p">]),</span> <span class="n">c</span><span class="p">(</span><span class="s2">"ind2"</span><span class="p">,</span> <span class="s2">"x2"</span><span class="p">,</span> <span class="s2">"y2"</span><span class="p">)]</span>
+  <span class="n">polygon.ext2</span> <span class="o">&lt;-</span> <span class="n">polygon.ext2</span><span class="p">[</span><span class="o">-</span><span class="n">which</span><span class="p">(</span><span class="n">polygon.ext2</span><span class="o">$</span><span class="n">ind1</span> <span class="o">==</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="m">-1</span><span class="p">,</span> <span class="m">1</span><span class="p">]),</span> <span class="p">]</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">]</span> <span class="o">&lt;-</span> <span class="n">polygon.ext2</span><span class="p">[</span><span class="n">which</span><span class="p">(</span><span class="n">polygon.ext2</span><span class="o">$</span><span class="n">ind2</span> <span class="o">==</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="m">-1</span><span class="p">,</span> <span class="m">1</span><span class="p">]),</span> <span class="n">c</span><span class="p">(</span><span class="s2">"ind1"</span><span class="p">,</span> <span class="s2">"x1"</span><span class="p">,</span> <span class="s2">"y1"</span><span class="p">)]</span>
+  <span class="n">polygon.ext2</span> <span class="o">&lt;-</span> <span class="n">polygon.ext2</span><span class="p">[</span><span class="o">-</span><span class="n">which</span><span class="p">(</span><span class="n">polygon.ext2</span><span class="o">$</span><span class="n">ind2</span> <span class="o">==</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="m">-1</span><span class="p">,</span> <span class="m">1</span><span class="p">]),</span> <span class="p">]}</span>
+<span class="p">}</span>
+
+  <span class="c1"># list of voronoi summits which are in the polygon:
+</span><span class="n">voronoi.constrain</span> <span class="o">&lt;-</span> <span class="n">data.table</span><span class="p">(</span><span class="n">pnt.in.poly</span><span class="p">(</span><span class="n">voronoi.summit</span><span class="p">,</span> <span class="n">order</span><span class="p">[,</span> <span class="n">c</span><span class="p">(</span><span class="s2">"lon"</span><span class="p">,</span> <span class="s2">"lat"</span><span class="p">)]))</span>
+
+  <span class="c1"># voronoi inside the polygon:
+</span><span class="n">voronoi.part</span> <span class="o">&lt;-</span> <span class="n">merge</span><span class="p">(</span><span class="n">voronoi.full</span><span class="p">,</span> <span class="n">voronoi.constrain</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"mx1"</span><span class="p">,</span> <span class="s2">"my1"</span><span class="p">),</span> <span class="n">all.x</span> <span class="o">=</span> <span class="n">T</span><span class="p">)</span>
+<span class="n">setnames</span><span class="p">(</span><span class="n">voronoi.constrain</span><span class="p">,</span> <span class="n">c</span><span class="p">(</span><span class="s2">"mx1"</span><span class="p">,</span> <span class="s2">"my1"</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">"mx2"</span><span class="p">,</span> <span class="s2">"my2"</span><span class="p">))</span>
+<span class="n">voronoi.part</span> <span class="o">&lt;-</span> <span class="n">merge</span><span class="p">(</span><span class="n">voronoi.part</span><span class="p">,</span> <span class="n">voronoi.constrain</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"mx2"</span><span class="p">,</span> <span class="s2">"my2"</span><span class="p">),</span> <span class="n">all.x</span> <span class="o">=</span> <span class="n">T</span><span class="p">)</span>
+
+   <span class="c1"># plot the voronoi diagram with constraint &amp; only inside edge of voronoi diagram:
+</span><span class="n">zones.london.vor</span> <span class="o">&lt;-</span> <span class="n">zones.london</span> <span class="o">+</span>
+  <span class="n">geom_segment</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">polygon.ext</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">y1</span><span class="p">,</span> <span class="n">xend</span> <span class="o">=</span> <span class="n">x2</span><span class="p">,</span> <span class="n">yend</span> <span class="o">=</span> <span class="n">y2</span><span class="p">),</span> <span class="n">colour</span> <span class="o">=</span> <span class="s2">"blue"</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="m">0.25</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">geom_segment</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">voronoi.part</span><span class="p">[</span><span class="n">pip.x</span> <span class="o">==</span> <span class="m">1</span> <span class="o">&amp;</span> <span class="n">pip.y</span> <span class="o">==</span> <span class="m">1</span><span class="p">,</span> <span class="p">],</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">mx2</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">my2</span><span class="p">,</span> <span class="n">xend</span> <span class="o">=</span> <span class="n">mx1</span><span class="p">,</span> <span class="n">yend</span> <span class="o">=</span> <span class="n">my1</span><span class="p">),</span> <span class="n">colour</span> <span class="o">=</span> <span class="s2">"red"</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="m">0.25</span><span class="p">)</span> 
+<span class="n">zones.london.vor</span></code></pre></figure>
+
+<p><img src="/blog/figure/source/2015-07-16-Voronoi_station/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
+
+<h3>  Finding the furthest point from the subway </h3>
+
+<p>I am looking for the voronoi summit the furthest from any subway station.
+I use the spDistsN1 function to calculate the distance on a sphere.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1">### Finding the furthest point:
+</span>  <span class="c1"># voronoi summit in the polygon
+</span><span class="n">voronoi.constrain.lim</span> <span class="o">&lt;-</span> <span class="n">voronoi.constrain</span><span class="p">[</span><span class="n">pip</span> <span class="o">==</span> <span class="m">1</span><span class="p">,</span> <span class="n">list</span><span class="p">(</span><span class="n">mx2</span><span class="p">,</span> <span class="n">my2</span><span class="p">)]</span>
+
+  <span class="c1"># matrix of distance between all the station and the voronoi summits: 
+</span><span class="n">matrix.dist</span> <span class="o">&lt;-</span> <span class="n">apply</span><span class="p">(</span><span class="n">voronoi.constrain.lim</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="n">eachPoint</span><span class="p">)</span> <span class="n">spDistsN1</span><span class="p">(</span><span class="n">as.matrix</span><span class="p">(</span><span class="n">coord.station.min</span><span class="p">[,</span> <span class="n">list</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)]),</span> <span class="n">eachPoint</span><span class="p">,</span> <span class="n">longlat</span> <span class="o">=</span> <span class="n">T</span><span class="p">))</span>
+
+  <span class="c1"># for each colum, the lowest distance:
+</span><span class="n">min.dist</span> <span class="o">&lt;-</span> <span class="n">apply</span><span class="p">(</span><span class="n">matrix.dist</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="n">min</span><span class="p">)</span>
+
+  <span class="c1"># coordonates of the furthest point:
+</span><span class="n">min.coordinates</span> <span class="o">&lt;-</span> <span class="n">voronoi.constrain.lim</span><span class="p">[</span><span class="n">which</span><span class="p">(</span><span class="n">matrix.dist</span> <span class="o">==</span> <span class="n">max</span><span class="p">(</span><span class="n">min.dist</span><span class="p">),</span> <span class="n">arr.ind</span> <span class="o">=</span> <span class="n">T</span><span class="p">)[</span><span class="m">2</span><span class="p">]]</span>
+
+  <span class="c1"># Thirdly, plotting the point:
+</span><span class="n">zones.london.point</span> <span class="o">&lt;-</span> <span class="n">zones.london.vor</span> <span class="o">+</span>
+   <span class="n">geom_point</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">min.coordinates</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">mx2</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">my2</span><span class="p">),</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">"green"</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="m">2</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">annotate</span><span class="p">(</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">min.coordinates</span><span class="o">$</span><span class="n">mx2</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">min.coordinates</span><span class="o">$</span><span class="n">my2</span> <span class="o">-</span> <span class="m">0.003</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"The albert memorial"</span><span class="p">)</span>
+<span class="n">zones.london.point</span></code></pre></figure>
+
+<p><img src="/blog/figure/source/2015-07-16-Voronoi_station/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
+
+<p>In the end, it appears that the furthest point from the subway in London is near the Albert memorial. If you already find yourself hanging there and thinking that the next subway station was quite far, be rassured, it’s definitely normal. :)</p>
+
+
+	
+	<div id="disqus_thread"></div>
+
+	<script>
+		/**
+		 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+		 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+		 */
+		/*
+		var disqus_config = function () {
+			this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+			this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+		};
+		*/
+		(function() {  // DON'T EDIT BELOW THIS LINE
+			var d = document, s = d.createElement('script');
+			
+			s.src = '//datalaborereu.disqus.com/embed.js';
+			
+			s.setAttribute('data-timestamp', +new Date());
+			(d.head || d.body).appendChild(s);
+		})();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+	<script id="dsq-count-scr" src="//datalaborereu.disqus.com/count.js" async></script>
+	
+  </article>
+
+</div>
+
+		
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Data Laborer</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li> <a href="http://data-laborer.eu">Data Laborer   </a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="http://github.com/yvesCR">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">yvesCR</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Personnal web site of a data scientist. Statistic, data-visualisation and hacks. R code and soon python.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+	
+  </body>
+
+</html>
