@@ -94,7 +94,7 @@ plot.no.map.voronoi <- zones.london +
 plot.no.map.voronoi
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-3](/figure/source/2015-07-16-Voronoi_station/unnamed-chunk-3-1.png) 
+![plot of chunk unnamed-chunk-3](http://yvescr.github.io/figure/source/2015-07-16-Voronoi_station/unnamed-chunk-3-1.png) 
 
 Now, we have the constraint and the voronoi diagram on all the subways station of the zone 1.
 
@@ -150,7 +150,7 @@ zones.london.vor <- zones.london +
 zones.london.vor
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-4](/figure/source/2015-07-16-Voronoi_station/unnamed-chunk-4-1.png) 
+![plot of chunk unnamed-chunk-4](http://yvescr.github.io/figure/source/2015-07-16-Voronoi_station/unnamed-chunk-4-1.png) 
 
 <h3>  Finding the furthest point from the subway </h3>
 
@@ -179,7 +179,7 @@ zones.london.point <- zones.london.vor +
 zones.london.point
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-5](/figure/source/2015-07-16-Voronoi_station/unnamed-chunk-5-1.png) 
+![plot of chunk unnamed-chunk-5](http://yvescr.github.io/figure/source/2015-07-16-Voronoi_station/unnamed-chunk-5-1.png) 
 
 In the end, it appears that the furthest point from the subway in London is near the Albert memorial. If you already find yourself hanging there and thinking that the next subway station was quite far, be rassured, it's definitely normal. :)
 

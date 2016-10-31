@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Dashboarding with flexdashboard and opencpu</title>
+    <meta name="description" content="Personnal web site of a data scientist. Statistic, data-visualisation and hacks. R code and soon python.
+">
+
+    <link rel="stylesheet" href="http://yvescr.github.io/css/main.css">
+    
+	
+	<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71940303-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  <body>
+
+    <header class="site-header">
+
+
+  <div class="wrapper">
+
+    <a class="site-title" href="http://yvescr.github.io/" >Data Laborer </a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+      </a>
+	
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="http://yvescr.github.io/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Dashboarding with flexdashboard and opencpu</h1>
+    <p class="post-meta">Oct 31, 2016</p>
+  </header>
+
+  <article class="post-content">
+    <h2 id="abstract">Abstract</h2>
+
+<p>In this article, I present an exemple of mix use of opencpu and flexdashboard. 
+Opencpu is used as the back end of the dashboard and flexdashboard as the front end.</p>
+
+<p>The originality, here, lie in the fact that I code the js to call the api in the Rmd. This allows me to concentrate all the front-end code in one script, the rmd.</p>
+
+<p>The process to create the dashboard is the following:</p>
+
+<ul>
+  <li>Create the R package, the back-end functions</li>
+  <li>Create a flexdashboard containing the html structure and js code</li>
+</ul>
+
+<p>A script is used to render the flexdashboard, build the package and serve the updated dashboard.</p>
+
+<h2 id="opencpu">Opencpu</h2>
+
+<p><a href="opencpu.org">Opencpu</a> is a system that provides a reliable and interoperable HTTP API for data analysis based on R. It allows to easily implement R in a production environment through the use of an API to serve R scripts structured as a package.</p>
+
+<p>At first, it is a complex subject, as the concept of API needs to be understood, which is not a native knowledge for a lot of analysts.</p>
+
+<p>To ease up beginners, I advice to read these two resources, which describe opencpu case studies:</p>
+
+<ul>
+  <li><a href="https://medium.com/@TheLaddersEng/data-scientists-toolbox-for-data-infrastructure-i-e25391f145a3#.dg3csfgf1">Personnalised results with opencpu</a></li>
+  <li><a href="https://earlconf.com/london/speaker/hxcuw">Prefetch url with opencpu</a></li>
+</ul>
+
+<p>To summarize, opencpu allows to run R scripts on demand.</p>
+
+<p>There is alternatives to opencpu.
+At the last EARL conference, two speakers were using different methods:</p>
+
+<ul>
+  <li><a href="https://earlconf.com/london/speaker/6zbc3">Real-time scoring in marketplace</a></li>
+  <li><a href="https://earlconf.com/london/speaker/8oj31">Real-time predictive analytic in medical claim processing</a></li>
+</ul>
+
+<p>In the first case, an API had been built in Ruby to wrap R code. In the second case, a R script is called in batch by a script in java.</p>
+
+<p>The main caveat of opencpu is the security: I am not aware of an easy option to use https instead of http. I use openCPU behind a corporate firewall so I don’t have to worry too much about how secure it can be.</p>
+
+<h2 id="flexdashboard-and-shiny">Flexdashboard and shiny</h2>
+
+<p><a href="http://rmarkdown.rstudio.com/flexdashboard/">Flexdashboard</a> is a package by Rstudio which allows to do a dashboard with Rmarkdown.</p>
+
+<p>You can create a standalone document where the interactivity is limited at the htmlwidget packages level.</p>
+
+<p>You can, for exemple, include a leaflet map, a D3 chart or a plotly chart.</p>
+
+<p>For more complex customization, the traditional way is to use shiny as the back-end to create fully customized dashboard; sometimes a good alternative to Tableau or BO.</p>
+
+<h2 id="using-opencpu-with-flexdashboard">Using opencpu with flexdashboard</h2>
+
+<h3 id="creation-of-the-stack">Creation of the stack</h3>
+
+<p>To create the dashboard, the first thing to do is to code the back-end: the R package which is served by opencpu. The front-end come in second place.</p>
+
+<p>The main reference for that is the book <a href="r-pkgs.had.co.nz">R packages</a> by Hadley Wickham.</p>
+
+<p>To test your package, the easiest way is to use the <a href="https://public.opencpu.org/ocpu/test/">OpenCPU API explorer</a>.
+You can enter your parameter and get the result the way the API is returning it.</p>
+
+<p>In my exemple, functions return either a json, a R plot or an html file.</p>
+
+<p>For the front-end, I create two scripts:</p>
+
+<ul>
+  <li>A script “Index.Rmd”, which content the flexdashboard structure of my dashboard.
+    <ul>
+      <li>The script need to be rendered as “Index.html” in the inst/www folder.</li>
+    </ul>
+  </li>
+  <li>A script “setup_package.R” which contain the steps to update the package.
+    <ul>
+      <li>The name can be different.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The Rmd script use the flexdashboard structure but most of the content is js code to get the API content or js code to produce the input buttons. It is a mix of html, R and js code.</p>
+
+<h3 id="update-the-dashboard">Update the dashboard</h3>
+
+<p>When I have finished to modified my code, I use the script “setup_package.R” to update the dashboard. The process contain 4 steps:</p>
+
+<ul>
+  <li>Render the Rmarkdown file “Index.Rmd” to “Index.html” in inst/www</li>
+  <li>Build the package</li>
+  <li>Install the package</li>
+  <li>Open the browser at the URL of the dashboard.</li>
+</ul>
+
+<p>In addition, the first time that the dashboard is updated, the opencpu server need to be started.</p>
+
+<p>On my exemple, the whole process take less than 10 sec, which is enough to keep my attention focused on the task.</p>
+
+<p>All the code could be found on my github account, <a href="https://github.com/YvesCR/flexocpu">here</a>. Feel free to comment.</p>
+
+	
+	<div id="disqus_thread"></div>
+
+	<script>
+		/**
+		 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+		 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+		 */
+		/*
+		var disqus_config = function () {
+			this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+			this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+		};
+		*/
+		(function() {  // DON'T EDIT BELOW THIS LINE
+			var d = document, s = d.createElement('script');
+			
+			s.src = '//datalaborereu.disqus.com/embed.js';
+			
+			s.setAttribute('data-timestamp', +new Date());
+			(d.head || d.body).appendChild(s);
+		})();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+	<script id="dsq-count-scr" src="//datalaborereu.disqus.com/count.js" async></script>
+	
+  </article>
+
+</div>
+
+		
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Data Laborer</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li> <a href="http://data-laborer.eu">Data Laborer   </a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="http://github.com/yvesCR">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">yvesCR</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Personnal web site of a data scientist. Statistic, data-visualisation and hacks. R code and soon python.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+	
+  </body>
+
+</html>

@@ -122,6 +122,8 @@ The loop for sending the mail could take a few minutes.
 The file allow an analysis of the parity. 
 
 
+
+
 {% highlight r %}
 # plot
 ggplot(senateur.infos, aes(x = group, fill= sexe)) + geom_bar() +
@@ -141,7 +143,7 @@ ggplot(senateur.infos, aes(x = group, fill= sexe)) + geom_bar() +
         , axis.title = element_text(size = 15, colour = "darkcyan", face = "bold"))
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-5](/figure/source/2015-07-15-Mail_to_senateur/unnamed-chunk-5-1.png) 
+![plot of chunk unnamed-chunk-5](http://yvescr.github.io/figure/source/2015-07-15-Mail_to_senateur/unnamed-chunk-5-1.png) 
 
 Only the CRC (communists) and the ecologists have a strict parity.
 

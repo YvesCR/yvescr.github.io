@@ -106,7 +106,7 @@ diamonds.dt[, c(lapply(.SD, median.unique), count = .N), by = cut, .SD = var.of.
 
 
 {% highlight text %}
-##          cut carat depth  price     x    y    z count
+##          cut carat depth  price     x    y    z     N
 ## 1:     Ideal  0.54  61.8 1810.0 5.250 5.26 3.23 21551
 ## 2:   Premium  0.86  61.4 3185.0 6.110 6.06 3.72 13791
 ## 3:      Good  0.82  63.4 3050.5 5.980 5.99 3.70  4906
@@ -126,7 +126,7 @@ diamonds.dt[, c(lapply(.SD, away.sd), count = .N), by = cut, .SD = var.of.intere
 
 
 {% highlight text %}
-##          cut carat depth price   x   y   z count
+##          cut carat depth price   x   y   z     N
 ## 1:     Ideal  1020   855  1390 711 656 717 21551
 ## 2:   Premium   831   564   942 253 123 240 13791
 ## 3:      Good   226   402   305 159 168 164  4906
@@ -146,7 +146,7 @@ diamonds.dt[, c(lapply(.SD, away.sd2), count = .N), by = cut, .SD = var.of.inter
 
 
 {% highlight text %}
-##          cut  carat  depth  price      x      y      z count
+##          cut  carat  depth  price      x      y      z     N
 ## 1:     Ideal 0.047% 0.040% 0.064% 0.033% 0.030% 0.033% 21551
 ## 2:   Premium 0.060% 0.041% 0.068% 0.018% 0.009% 0.017% 13791
 ## 3:      Good 0.046% 0.082% 0.062% 0.032% 0.034% 0.033%  4906
@@ -175,7 +175,7 @@ p2 <- ggplot(aes(x = carat, y = price, colour = clarity), data = diamonds.dt) +
 grid.arrange(p1, p2, nrow = 1, ncol = 2)
 {% endhighlight %}
 
-![plot of chunk unnamed-chunk-3](/figure/source/2015-08-28-Tips and tricks/unnamed-chunk-3-1.png) 
+![plot of chunk unnamed-chunk-3](http://yvescr.github.io/figure/source/2015-08-28-Tips and tricks/unnamed-chunk-3-1.png) 
 
 
 
