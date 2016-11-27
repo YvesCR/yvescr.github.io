@@ -74,12 +74,12 @@
   <article class="post-content">
     <h2 id="abstract">Abstract</h2>
 
-<p>In this article, I present an exemple of mix use of opencpu and flexdashboard. 
+<p>In this blog posts, I present an exemple of mix use of opencpu and flexdashboard. 
 Opencpu is used as the back end of the dashboard and flexdashboard as the front end.</p>
 
 <p>A live demonstration is available <a href="https://yvescr.ocpu.io/flexocpu/www/">here</a>.</p>
 
-<p>The originality, here, lie in the fact that I code the js to call the api in the Rmd. This allows me to concentrate all the front-end code in one script, the rmd.</p>
+<p>The originality lie in the fact that the js to call the api is coded in the Rmd. This allows me to concentrate all the front-end code in one script, the rmd.</p>
 
 <p>The process to create the dashboard is the following:</p>
 
@@ -106,7 +106,7 @@ Opencpu is used as the back end of the dashboard and flexdashboard as the front 
 <p>To summarize, opencpu allows to run R scripts on demand.</p>
 
 <p>There is alternatives to opencpu.
-At the last EARL conference, two speakers were using different methods:</p>
+At the last EARL conference, two speakers were using different methods to use R as a real time back-end :</p>
 
 <ul>
   <li><a href="https://earlconf.com/london/speaker/6zbc3">Real-time scoring in marketplace</a></li>
@@ -115,7 +115,7 @@ At the last EARL conference, two speakers were using different methods:</p>
 
 <p>In the first case, an API had been built in Ruby to wrap R code. In the second case, a R script is called in batch by a script in java.</p>
 
-<p>The main caveat of opencpu is the security: I am not aware of an easy option to use https instead of http. I use openCPU behind a corporate firewall so I don’t have to worry too much about how secure it can be.</p>
+<p>The main caveat of opencpu is the security: it is easy to inject code and uneasy to hide data. I use openCPU behind a corporate firewall so I don’t have to worry too much about how secure it can be.</p>
 
 <h2 id="flexdashboard-and-shiny">Flexdashboard and shiny</h2>
 
@@ -136,7 +136,7 @@ At the last EARL conference, two speakers were using different methods:</p>
 <p>The main reference for that is the book <a href="r-pkgs.had.co.nz">R packages</a> by Hadley Wickham.</p>
 
 <p>To test your package, the easiest way is to use the <a href="https://public.opencpu.org/ocpu/test/">OpenCPU API explorer</a>.
-You can enter your parameter and get the result the way the API is returning it.</p>
+You can enter your parameter and get the live result in a more fashion way than with a call with cURL.</p>
 
 <p>In my exemple, functions return either a json, a R plot or an html file.</p>
 
@@ -159,7 +159,7 @@ You can enter your parameter and get the result the way the API is returning it.
 
 <h3 id="update-the-dashboard">Update the dashboard</h3>
 
-<p>When I have finished to modified my code, I use the script “setup_package.R” to update the dashboard. The process contain 4 steps:</p>
+<p>When I want to modify my code, I use the script “setup_package.R” to update the dashboard. The process contain 4 steps:</p>
 
 <ul>
   <li>Render the Rmarkdown file “Index.Rmd” to “Index.html” in inst/www</li>
@@ -172,7 +172,7 @@ You can enter your parameter and get the result the way the API is returning it.
 
 <p>On my exemple, the whole process take less than 10 sec, which is enough to keep my attention focused on the task.</p>
 
-<p>All the code could be found on my github account, <a href="https://github.com/YvesCR/flexocpu">here</a>. Feel free to comment.</p>
+<p>All the code could be found on my github account, <a href="https://github.com/YvesCR/flexocpu">here</a>.</p>
 
 	
 	<div id="disqus_thread"></div>
