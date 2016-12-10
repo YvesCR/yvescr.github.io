@@ -177,13 +177,14 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+
 <p>Todays blog post is more a note than a full blog post.</p>
 <p>On my previous post, opencpu was used to create a back-end environment for a flexdashboard dashboard.</p>
-<p>On that post, I include in my post dynamic plot.</p>
+<p>On that post, I use a bit of js to include dynamic plot into my web page.</p>
 <p><script src="https://code.jquery.com/jquery-1.11.1.min.js"></script><script src="https://cdn.opencpu.org/opencpu-0.4.js"></script><script>ocpu.seturl('https://yvescr.ocpu.io/flexocpu/R')</script></p>
 <div id="set-up" class="section level2">
 <h2>Set up</h2>
-<p>It is possible to include js directly in your .rmd. It prefer tough for small piece of code to use <code>htmltools</code>:</p>
+<p>It is possible to include js directly in your .rmd. I prefer for small piece of code to use <code>htmltools</code> but it is not mandatory:</p>
 <pre class="r"><code># client library for opencpu:
 htmltools::tags$script(src=&quot;https://code.jquery.com/jquery-1.11.1.min.js&quot;)
 htmltools::tags$script(src=&quot;https://cdn.opencpu.org/opencpu-0.4.js&quot;)
@@ -194,7 +195,7 @@ htmltools::tags$script(&quot;ocpu.seturl('https://yvescr.ocpu.io/flexocpu/R')&qu
 <div id="plot" class="section level2">
 <h2>Plot</h2>
 <p>Now, we use the <code>.rplot</code> function to call plot. here, with a parameter of 1.</p>
-<p>It is indeed useless if the plot is a dynamic one. It is better in that case to include a fixed image.</p>
+<p>It is indeed useless if the plot is not a dynamic one. It is better in that case to include a fixed image.</p>
 <p>The code used to include this post:</p>
 <pre class="r"><code>&lt;script&gt;
 $(function(){ 
@@ -262,7 +263,8 @@ $(function(){
 });
   
 </script>
-<p>The result is a dynamic plot inside the blog post:</p>
+<p>The result is a dynamic plot inside the blog post.</p>
+<p>You can enter any integer between 1 and 544:</p>
 <p><input type="integer" class="form-control" id="myid" value="1" style="width: 90%;"/><button type="submit" id="idsubmit" class="btn btn-default">Update dashboard!</button></p>
 <div id="plotdiv" style="height: 270px"></div>
 <p>The same can be done to create dynamic json or any htmlwidget output.</p>
