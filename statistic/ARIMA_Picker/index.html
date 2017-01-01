@@ -168,7 +168,7 @@
       
 
       <section class="page__content" itemprop="text">
-        <p><img src="https://yvescr.github.io/image/arimaUI_Picker.gif" alt="Presentation of a shiny gadget allowing to pick arima parameters" style="margin:0px;margin-right:2%;text-align: center;vertical-align: middle;" /></p>
+        <p><img src="https://yvescr.github.io/assets/images/arimaUI_Picker.gif" alt="Presentation of a shiny gadget allowing to pick arima parameters" style="margin:0px;margin-right:2%;text-align: center;vertical-align: middle;" /></p>
 
 <p>ARIMA is a type of model widely used in time series problems, for exemple to predict sales or stocks.</p>
 
@@ -185,35 +185,35 @@ Otherwise, you still could enjoy the <code class="highlighter-rouge">arimaUI</co
 
 <p>To install the add-in:</p>
 
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">devtools</span><span class="p">)</span><span class="w">
-</span><span class="n">install_github</span><span class="p">(</span><span class="s2">"YvesCR/arimaUI"</span><span class="p">)</span><span class="w">
-</span><span class="n">library</span><span class="p">(</span><span class="n">arimaUI</span><span class="p">)</span></code></pre></figure>
+<pre><code class="prettyprint ">library(devtools)
+install_github(&quot;YvesCR/arimaUI&quot;)
+library(arimaUI)</code></pre>
 
 <p>To use the app, select the timeseries you want to display in your code, then click Addins » arima_addin.</p>
 
 <p>The best way to familiarize yourself with the function is to play with it.
 For exemple by simulating in a blind way the components of your time serie:</p>
 
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># simulation of the components (p, d, q). 
-</span><span class="n">order.blind</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">floor</span><span class="p">(</span><span class="n">runif</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">))</span><span class="w">
+<pre><code class="prettyprint "># simulation of the components (p, d, q). 
+order.blind &lt;- floor(runif(3, 0, 3))
 
-</span><span class="c1"># For ARIMA models with differencing, the differenced series follows a zero-mean ARMA model
-</span><span class="k">if</span><span class="p">(</span><span class="n">order.blind</span><span class="p">[</span><span class="m">2</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="n">order.blind</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0</span><span class="w">
+# For ARIMA models with differencing, the differenced series follows a zero-mean ARMA model
+if(order.blind[2] &gt; 0) order.blind[1] &lt;- 0
 
-</span><span class="c1"># simulation of the parameters
-</span><span class="n">ar.blind</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">runif</span><span class="p">(</span><span class="n">order.blind</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
-</span><span class="n">ma.blind</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">runif</span><span class="p">(</span><span class="n">order.blind</span><span class="p">[</span><span class="m">3</span><span class="p">],</span><span class="w"> </span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+# simulation of the parameters
+ar.blind &lt;- runif(order.blind[1], -1, 1)
+ma.blind &lt;- runif(order.blind[3], -1, 1)
 
-</span><span class="c1"># below 50 points, finding the correct components is challenging.
-</span><span class="n">sim.ts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">arima.sim</span><span class="p">(</span><span class="w">
-</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w">
-</span><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
-  </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">order.blind</span><span class="p">,</span><span class="w">
-  </span><span class="n">ar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ar.blind</span><span class="w">
-</span><span class="p">,</span><span class="w"> </span><span class="n">ma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ma.blind</span><span class="w">
-</span><span class="p">))</span><span class="w">
+# below 50 points, finding the correct components is challenging.
+sim.ts &lt;- arima.sim(
+n = 100,
+model = list(
+  order = order.blind,
+  ar = ar.blind
+, ma = ma.blind
+))
 
-</span><span class="n">list.res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">arimaUI</span><span class="p">(</span><span class="n">sim.ts</span><span class="p">)</span></code></pre></figure>
+list.res &lt;- arimaUI(sim.ts)</code></pre>
 
 <p>If the numbers of the components that you pick in the end is equal to the ones which had been randomly selected, you are truly skilled, congratulations.</p>
 
