@@ -1,6 +1,6 @@
 local({
   # fall back on '/' if baseurl is not specified
-  knitr::opts_knit$set(base.url = 'http://data-laborer.eu')
+  knitr::opts_knit$set(base.url = 'http://data-laborer.eu/')
   knitr::opts_knit$set(dir.url = 'C:/blog/gen_blog_dev_mm/')
   
   # fall back on 'kramdown' if markdown engine is not specified
