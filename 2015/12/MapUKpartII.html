@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Choropleth map of the UK with R - Part II:
+ Is central London a ghost town?</title>
+    <meta name="description" content="Personnal web site of a data scientist. Statistic, data-visualisation and hacks. R code and soon python.
+">
+
+    <link rel="stylesheet" href="http://yvescr.github.io/css/main.css">
+    
+	
+	<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71940303-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  <body>
+
+    <header class="site-header">
+
+
+  <div class="wrapper">
+
+    <a class="site-title" href="http://yvescr.github.io/" >Data Laborer </a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+      </a>
+	
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="http://yvescr.github.io/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Choropleth map of the UK with R - Part II:
+ Is central London a ghost town?</h1>
+    <p class="post-meta">Dec 28, 2015</p>
+  </header>
+
+  <article class="post-content">
+    <p>In the first part, we get a nice tool of visualisation of the district postcode area, a chloropeth Map.</p>
+
+<p>Now, I want to do some real analysis on the districts.</p>
+
+<p>In the first part, I have calculated the area of the UK districts.</p>
+
+<p>Crawling on the british statistic national office, I found a table with the population at the district postcode level. At this level of accuracy, only a few metrics are available. But having the area and the population, I could calculate the density.</p>
+
+<p>Before to go further, a first mapping of these data show huge inconstency looking at places I would expect highly populated.
+For exemple, Central London shows a low density, where I would expect a high density. The perfect exemple is the number of inhabitants in EC1A, 878 in 2011. This number is highly surprising.
+Consequently, what I represent here is not the reality, it is the snapshot captured in the data, made by  humans and as such could be far from the reality.</p>
+
+<h1 id="mapping-the-density">Mapping the density</h1>
+
+<p>I made here a small map of the density in the UK:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Warning in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir le
+## fichier compressé './data/map.rdata', cause probable : 'No such file
+## or directory'</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Error in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir la connexion</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Warning in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir le
+## fichier compressé './data/pop2.rdata', cause probable : 'No such file
+## or directory'</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Error in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir la connexion</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Warning in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir le
+## fichier compressé './data/pop4.rdata', cause probable : 'No such file
+## or directory'</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Error in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir la connexion</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="w">  </span><span class="n">theme_map_uk</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"right"</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">axis.ticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">axis.text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">axis.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">panel.margin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="s2">"mm"</span><span class="p">))</span><span class="w">
+
+</span><span class="n">ggmap</span><span class="p">(</span><span class="n">map</span><span class="p">)</span><span class="w">  </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_polygon</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pop2</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lng</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lat</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">density.cut</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+        </span><span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">brewer.pal</span><span class="p">(</span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="s2">"Greens"</span><span class="p">),</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Density of\n Population\n(pop/km2)"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_map_uk</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Error in ggmap(map): objet 'map' introuvable</code></pre></figure>
+
+<p>A bigger one (45 Mb) could be found with the code to produce it in my github account, <a href="https://github.com/YvesCR/blog/blob/gh-pages/image/Big_UK_Density_cluster_Plot.png">here</a>.</p>
+
+<p>The code to produce the map could be found there as well. I tried to plot a map so detailled that you could zoom to distinguish the most tiny postcode area, like EC1 in central London.</p>
+
+<h1 id="further-analysis">Further Analysis</h1>
+
+<p>Even considering that the data in the most dense area is biased, it is still posible to analisys this data set. Here, I will do a spatial clustering of the districts looking at the density.</p>
+
+<p>To have a coherent cluster, I took the logarithm of the density, as the density goes from 0 to 400K people per km2.</p>
+
+<p>I limit the lower bound of size of cluster to 10, to avoid outliers to create clusters.</p>
+
+<p>My first attempt with k-means showed a really low resilience of the clustering looking at the initial points and the seed.
+To counter that effect, I tried a bagging k-means cluster, which didn’t created nice looking region.</p>
+
+<p>In the end, I choosed a simple hierarchical cluster with the ward measure.</p>
+
+<p>We took the mean of the coordinates which make the polygon of the district as the center of the district. It introduces some bias in direction of the most accidented side of the district, but it is enough for what I want to achieve.</p>
+
+<p>With a final number of cluster of 15, it is possible to define new British regions based on the density of population.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># Ward Hierarchical Clustering. pop4 is a data.table
+</span><span class="n">d</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dist</span><span class="p">(</span><span class="n">pop4</span><span class="p">[,</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">density2</span><span class="p">)],</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"euclidean"</span><span class="p">)</span><span class="w"> </span><span class="c1"># distance matrix
+</span><span class="n">fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">hclust</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s2">"ward.D2"</span><span class="p">)</span><span class="w">
+</span><span class="n">groups</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cutree</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="m">15</span><span class="p">)</span><span class="w"> </span><span class="c1"># cut tree into 15 clusters
+</span><span class="w">
+</span><span class="c1">#pop4b &lt;- cbind(pop4, predict = bclust.res$cluster)
+</span><span class="n">pop4b</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cbind</span><span class="p">(</span><span class="n">pop4</span><span class="p">,</span><span class="w"> </span><span class="n">predict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">groups</span><span class="p">)</span><span class="w">
+</span><span class="n">pop4c</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">merge</span><span class="p">(</span><span class="n">pop2</span><span class="p">,</span><span class="w"> </span><span class="n">pop4b</span><span class="p">[,</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">predict</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)],</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"name"</span><span class="p">,</span><span class="w"> </span><span class="n">all.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">)</span><span class="w">
+</span><span class="n">pop4c</span><span class="p">[,</span><span class="w"> </span><span class="n">density.cut.predict</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">density</span><span class="p">)),</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"predict"</span><span class="p">]</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Warning in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir le
+## fichier compressé './data/pop6.rdata', cause probable : 'No such file
+## or directory'</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Error in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir la connexion</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Warning in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir le
+## fichier compressé './data/pop4c.rdata', cause probable : 'No such file
+## or directory'</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Error in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir la connexion</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Warning in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir le
+## fichier compressé './data/map2.rdata', cause probable : 'No such file
+## or directory'</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Error in readChar(con, 5L, useBytes = TRUE): impossible d'ouvrir la connexion</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggmap</span><span class="p">(</span><span class="n">map</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_polygon</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pop4c</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lng</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lat</span><span class="w">
+      </span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">density.cut.predict</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+    </span><span class="n">scale_fill_continuous</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Density of\n Population\n(log(pop/km2))"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"right"</span><span class="w">
+      </span><span class="p">,</span><span class="w"> </span><span class="n">axis.ticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+      </span><span class="p">,</span><span class="w"> </span><span class="n">axis.text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+      </span><span class="p">,</span><span class="w"> </span><span class="n">axis.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+      </span><span class="p">,</span><span class="w"> </span><span class="n">panel.margin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="s2">"mm"</span><span class="p">))</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Error in ggmap(map): objet 'map' introuvable</code></pre></figure>
+
+<p>With a zoom on Greater London:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggmap</span><span class="p">(</span><span class="n">map2</span><span class="p">)</span><span class="w">  </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_polygon</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pop4c</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lng</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lat</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">density.cut.predict</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+    </span><span class="n">scale_fill_continuous</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Density of\n Population\n(log(pop/km2))"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+    </span><span class="n">coord_map</span><span class="p">(</span><span class="n">xlim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">ylim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">51</span><span class="p">,</span><span class="w"> </span><span class="m">52</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_map_uk</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## Error in ggmap(map2): objet 'map2' introuvable</code></pre></figure>
+
+<p>We could clearly sees that in central London, the numbers are oddly low, then suddenly very high when we go further and it decrease with the distance.</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>In the end, it is really easy to create new regions and to make really accurate clusters of district. The question of the small number of inhabitants in central London is definitely weird and appeal new analysis, looking for exemple at the number of offices and houses. If a majority of the constructions are offices, the mistery would be resolved. Otherwise, in spite of the tremendous amount of activity, these part of London could be nicknamed as “the ghost town”.</p>
+
+	
+	<div id="disqus_thread"></div>
+
+	<script>
+		/**
+		 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+		 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+		 */
+		/*
+		var disqus_config = function () {
+			this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+			this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+		};
+		*/
+		(function() {  // DON'T EDIT BELOW THIS LINE
+			var d = document, s = d.createElement('script');
+			
+			s.src = '//datalaborereu.disqus.com/embed.js';
+			
+			s.setAttribute('data-timestamp', +new Date());
+			(d.head || d.body).appendChild(s);
+		})();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+	<script id="dsq-count-scr" src="//datalaborereu.disqus.com/count.js" async></script>
+	
+  </article>
+
+</div>
+
+		
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Data Laborer</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li> <a href="http://data-laborer.eu">Data Laborer   </a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="http://github.com/yvesCR">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">yvesCR</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Personnal web site of a data scientist. Statistic, data-visualisation and hacks. R code and soon python.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+	
+  </body>
+
+</html>

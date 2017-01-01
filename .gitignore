@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+_site/
+.sass-cache/
+gen/
+old/
+_source_no_compile/
