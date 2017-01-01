@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>August Coding Dojo: Choosing the Optimal Number of Cluster - Data laborer</title>
+
+
+
+
+<meta name="description" content="How to automatically define the optimal number of cluster when doing clustering?">
+
+
+
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="Data laborer">
+<meta property="og:title" content="August Coding Dojo: Choosing the Optimal Number of Cluster">
+
+
+  <link rel="canonical" href="https://data-laborer.eu/statistic/Number_of_Cluster/">
+  <meta property="og:url" content="https://data-laborer.eu/statistic/Number_of_Cluster/">
+
+
+
+  <meta property="og:description" content="How to automatically define the optimal number of cluster when doing clustering?">
+
+
+
+  <meta name="twitter:site" content="@SwiftAMHE">
+  <meta name="twitter:title" content="August Coding Dojo: Choosing the Optimal Number of Cluster">
+  <meta name="twitter:description" content="How to automatically define the optimal number of cluster when doing clustering?">
+  <meta name="twitter:url" content="https://data-laborer.eu/statistic/Number_of_Cluster/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+  
+
+  
+
+
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-08-18T00:00:00+01:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Yves Crutain",
+      "url" : "https://data-laborer.eu",
+      "sameAs" : ["https://twitter.com/swiftamhe","https://www.linkedin.com/in/yves-crutain-0b430324"]
+    }
+  </script>
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://data-laborer.eu/feed.xml" type="application/atom+xml" rel="alternate" title="Data laborer Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://data-laborer.eu/assets/css/main.css">
+
+<meta http-equiv="cleartype" content="on">
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+    <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <button><div class="navicon"></div></button>
+        <ul class="visible-links">
+          <li class="masthead__menu-item masthead__menu-item--lg"><a href="https://data-laborer.eu/">Data laborer</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/portfolio/">List View</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/categories/">Categories</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/about/index.html">About</a></li>
+          
+        </ul>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    
+
+
+
+<div id="main" role="main">
+  
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="August Coding Dojo: Choosing the Optimal Number of Cluster">
+    <meta itemprop="description" content="How to automatically define the optimal number of cluster when doing clustering?">
+    <meta itemprop="datePublished" content="August 18, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">August Coding Dojo: Choosing the Optimal Number of Cluster
+</h1>
+          
+            <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  4 minute read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        <p>At the last coding dojo, the interrogation we get was the following:
+Is it possible to create a function which automatically define the optimal number of cluster?
+As usual, the answer with R is: there is a package for that.</p>
+
+<h2> Training data set </h2>
+
+<p>First, we generate some fake data:
+Not too much separated, but not too messy. It is a simulation, not real life :)</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
+
+</span><span class="n">sd</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">30</span><span class="w">
+
+</span><span class="n">mat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="n">seq</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">10</span><span class="p">),</span><span class="n">seq</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="m">120</span><span class="p">),</span><span class="n">seq</span><span class="p">(</span><span class="m">10</span><span class="o">:</span><span class="m">30</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rnorm</span><span class="p">(</span><span class="m">52</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">sd</span><span class="p">),</span><span class="w"> 
+                 </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">seq</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">10</span><span class="p">),</span><span class="n">seq</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="m">120</span><span class="p">),</span><span class="n">seq</span><span class="p">(</span><span class="m">300</span><span class="p">,</span><span class="m">320</span><span class="p">))</span><span class="o">+</span><span class="w"> </span><span class="n">rnorm</span><span class="p">(</span><span class="m">52</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">sd</span><span class="p">)</span><span class="w">
+                 </span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="nf">rep</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span><span class="w"> </span><span class="m">10</span><span class="p">),</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="s2">"b"</span><span class="p">,</span><span class="w"> </span><span class="m">21</span><span class="p">),</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="s2">"c"</span><span class="p">,</span><span class="w"> </span><span class="m">21</span><span class="p">)))</span><span class="w">
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mat</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+    </span><span class="n">geom_point</span><span class="p">(</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">)</span><span class="w"> </span></code></pre></figure>
+
+<p><img src="http://data-laborer.eu/assets/images/figures/source/2015-08-18-Number_of_Cluster/unnamed-chunk-1-1.png" alt="plot of chunk unnamed-chunk-1" /></p>
+
+<h2> Analysis </h2>
+
+<h3> Elbow plot </h3>
+
+<p>Our main inspiration is that post on stackoverflow:</p>
+
+<p><a href="http://stackoverflow.com/questions/15376075/cluster-analysis-in-r-determine-the-optimal-number-of-clusters">http://stackoverflow.com/questions/15376075/cluster-analysis-in-r-determine-the-optimal-number-of-clusters</a></p>
+
+<p>And the help of the Nbclust package.</p>
+
+<p>The first way to determine a reasonnable number of cluster that was taught at school was the elbow plot.
+The concept is to plot the sum of the distance between the centroid of the cluster and the point of the cluster by cluster.</p>
+
+<p>The plot looks like an elbow and the classic rule is to take the number of cluster where the curve begin to flaten. Afterward, each new cluster is not really separated from the others.</p>
+
+<p>Elbow plot:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">wss</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="n">nrow</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span><span class="m">-1</span><span class="p">)</span><span class="o">*</span><span class="nf">sum</span><span class="p">(</span><span class="n">apply</span><span class="p">(</span><span class="n">mat</span><span class="p">[,</span><span class="w"> </span><span class="m">-3</span><span class="p">],</span><span class="m">2</span><span class="p">,</span><span class="n">var</span><span class="p">))</span><span class="w">
+  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">2</span><span class="o">:</span><span class="m">15</span><span class="p">)</span><span class="w"> </span><span class="n">wss</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">kmeans</span><span class="p">(</span><span class="n">mat</span><span class="p">[,</span><span class="w"> </span><span class="m">-3</span><span class="p">],</span><span class="w">
+                                       </span><span class="n">centers</span><span class="o">=</span><span class="n">i</span><span class="p">)</span><span class="o">$</span><span class="n">withinss</span><span class="p">)</span><span class="w">
+
+</span><span class="n">wss2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="n">wss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wss</span><span class="p">)</span><span class="w">
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wss2</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wss</span><span class="p">))</span><span class="o">+</span><span class="w">
+    </span><span class="n">geom_point</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_line</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_continuous</span><span class="p">(</span><span class="n">breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">15</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Elbow plot"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="http://data-laborer.eu/assets/images/figures/source/2015-08-18-Number_of_Cluster/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
+
+<h3> The function NbClust </h3>
+
+<p>The function NbClust test a consequent set of methods to determine the optimal number of clusters.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">NbClust</span><span class="p">(</span><span class="n">mat</span><span class="p">[,</span><span class="w"> </span><span class="m">-3</span><span class="p">],</span><span class="w"> </span><span class="n">diss</span><span class="o">=</span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"euclidean"</span><span class="p">,</span><span class="w"> </span><span class="n">min.nc</span><span class="o">=</span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">max.nc</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="w"> 
+             </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kmeans"</span><span class="p">,</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"all"</span><span class="p">)</span></code></pre></figure>
+
+<p>The different method used (minus the graphical ones) and the number of clusters picked by each:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">res</span><span class="o">$</span><span class="n">Best.nc</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">##                     KL       CH Hartigan     CCC   Scott     Marriot
+## Number_clusters 3.0000   3.0000   3.0000  3.0000  3.0000           3
+## Value_Index     8.7635 300.0656  86.9151 18.1358 75.9352 10591984522
+##                    TrCovW   TraceW Friedman    Rubin Cindex     DB
+## Number_clusters         3      3.0   4.0000   3.0000 2.0000 2.0000
+## Value_Index     767774491 126814.4  39.3377 -15.8557 0.2708 0.4622
+##                 Silhouette   Duda PseudoT2   Beale Ratkowsky     Ball
+## Number_clusters     3.0000 2.0000   2.0000  3.0000    2.0000     3.00
+## Value_Index         0.7122 0.2479  87.9946 -0.3846    0.5502 81386.75
+##                 PtBiserial Frey McClain   Dunn Hubert SDindex Dindex
+## Number_clusters     2.0000    1  2.0000 2.0000      0  2.0000      0
+## Value_Index         0.8678   NA  0.2981 0.4743      0  0.0154      0
+##                   SDbw
+## Number_clusters 6.0000
+## Value_Index     0.0678</code></pre></figure>
+
+<p>Most common value:(Without 0)</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">summary</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">Best.nc</span><span class="p">[</span><span class="m">1</span><span class="p">,][</span><span class="n">res</span><span class="o">$</span><span class="n">Best.nc</span><span class="p">[</span><span class="m">1</span><span class="p">,]</span><span class="o">!=</span><span class="w"> </span><span class="m">0</span><span class="p">])</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   2.000   3.000   2.708   3.000   6.000</code></pre></figure>
+
+<p>In the end, the median of all these methods is choosed. In this case, 3.</p>
+
+<h2> Result </h2>
+
+<p>The plot:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">mat</span><span class="o">$</span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res</span><span class="o">$</span><span class="n">Best.partition</span><span class="w">
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mat</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factor</span><span class="p">(</span><span class="n">res</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w">
+    </span><span class="n">geom_point</span><span class="p">(</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="http://data-laborer.eu/assets/images/figures/source/2015-08-18-Number_of_Cluster/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10" /></p>
+
+<p>There is another approach we didn’t had time to look at, but which seems promising:
+The package BHC which does bayesian hierarchical clustering could also provide us an insight on the best cluster.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#clustering" class="page__taxonomy-item" rel="tag">Clustering</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#ggplot2" class="page__taxonomy-item" rel="tag">ggplot2</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#nbclust" class="page__taxonomy-item" rel="tag">NbClust</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#r" class="page__taxonomy-item" rel="tag">R</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://data-laborer.eu/categories/#statistic" class="page__taxonomy-item" rel="tag">Statistic</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-08-18T00:00:00+01:00">August 18, 2015</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=SwiftAMHE&text=August Coding Dojo: Choosing the Optimal Number of Cluster https://data-laborer.eu/statistic/Number_of_Cluster/" class="btn btn--twitter" title="Share on Twitter"><i class="fa fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https://data-laborer.eu/statistic/Number_of_Cluster/" class="btn btn--facebook" title="Share on Facebook"><i class="fa fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=https://data-laborer.eu/statistic/Number_of_Cluster/" class="btn btn--google-plus" title="Share on Google Plus"><i class="fa fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://data-laborer.eu/statistic/Number_of_Cluster/" class="btn btn--linkedin" title="Share on LinkedIn"><i class="fa fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="https://data-laborer.eu/data%20visualisation/Voronoi_station/" class="pagination--pager" title="How Far am I From the Next Tube Station?
+">Previous</a>
+    
+    
+      <a href="https://data-laborer.eu/r/Tips-and-tricks/" class="pagination--pager" title="Tips and Tricks to Know in R
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+    <h4 class="page__comments-title">Leave a Comment</h4>
+    <section id="disqus_thread"></section>
+  
+</div>
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      
+        <h4 class="page__related-title">You May Also Enjoy</h4>
+      
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/TheRapeofEuropa.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/hack/embedocputest/" rel="permalink">Include R Output in your Blog Pages with Opencpu
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Nov 27, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  1 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Short exemple of how to include R output in a blog post with opencpu
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/flexocpu.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/r/Flexocpu/" rel="permalink">Dashboarding with Flexdashboard and Opencpu
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Oct 31, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  7 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">How to use opencpu as a back end for flexdashboard
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/earl.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/earl/EARL_2016_review/" rel="permalink">EARL 2016 Review
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Sep 20, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">EARL 2016 review
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/logog_oc.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/hack/Second_ropencorporate_pckg/" rel="permalink">Explore Company Officers of EDF with Ropencorporate
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> May 22, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Exemple of how to use the Ropencorporate package
+</p>
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/SwiftAMHE"><i class="fa fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="http://github.com/YvesCR"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    <li><a href="https://data-laborer.eu/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2017 Yves Crutain. Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+      </footer>
+    </div>
+
+    <script src="https://data-laborer.eu/assets/js/main.min.js"></script>
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71940303-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+  	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  	var disqus_shortname = 'datalaborereu';
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function() {
+  		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  	})();
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function () {
+  		var s = document.createElement('script'); s.async = true;
+  		s.type = 'text/javascript';
+  		s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  		(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+  	}());
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+
+
+  </body>
+</html>

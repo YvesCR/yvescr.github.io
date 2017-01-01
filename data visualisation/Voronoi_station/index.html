@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>How Far am I From the Next Tube Station? - Data laborer</title>
+
+
+
+
+<meta name="description" content="How to find the furthest point from a London tube station with Voronoi">
+
+
+
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="Data laborer">
+<meta property="og:title" content="How Far am I From the Next Tube Station?">
+
+
+  <link rel="canonical" href="https://data-laborer.eu/data%20visualisation/Voronoi_station/">
+  <meta property="og:url" content="https://data-laborer.eu/data%20visualisation/Voronoi_station/">
+
+
+
+  <meta property="og:description" content="How to find the furthest point from a London tube station with Voronoi">
+
+
+
+  <meta name="twitter:site" content="@SwiftAMHE">
+  <meta name="twitter:title" content="How Far am I From the Next Tube Station?">
+  <meta name="twitter:description" content="How to find the furthest point from a London tube station with Voronoi">
+  <meta name="twitter:url" content="https://data-laborer.eu/data%20visualisation/Voronoi_station/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+  
+
+  
+
+
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-07-16T00:00:00+01:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Yves Crutain",
+      "url" : "https://data-laborer.eu",
+      "sameAs" : ["https://twitter.com/swiftamhe","https://www.linkedin.com/in/yves-crutain-0b430324"]
+    }
+  </script>
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://data-laborer.eu/feed.xml" type="application/atom+xml" rel="alternate" title="Data laborer Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://data-laborer.eu/assets/css/main.css">
+
+<meta http-equiv="cleartype" content="on">
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+    <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <button><div class="navicon"></div></button>
+        <ul class="visible-links">
+          <li class="masthead__menu-item masthead__menu-item--lg"><a href="https://data-laborer.eu/">Data laborer</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/portfolio/">List View</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/categories/">Categories</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/about/index.html">About</a></li>
+          
+        </ul>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    
+
+
+
+<div id="main" role="main">
+  
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="How Far am I From the Next Tube Station?">
+    <meta itemprop="description" content="How to find the furthest point from a London tube station with Voronoi">
+    <meta itemprop="datePublished" content="July 16, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">How Far am I From the Next Tube Station?
+</h1>
+          
+            <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  9 minute read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        <p>A question was uplifted at the last R coding dojo. What is the location in central London which is the furthest from the subway?</p>
+
+<p>The first bit of code of this question was made at the LondonR coding dojo, here:</p>
+
+<p><a href="https://github.com/London-R-Dojo/Dojo-repo/tree/master/July-2015-Dojo">https://github.com/London-R-Dojo/Dojo-repo/tree/master/July-2015-Dojo</a></p>
+
+<p>Two approach was used to reply to this question:</p>
+
+<p>-Mapping the point depending on the distance from the subway</p>
+
+<p>-Using Voronoi diagram to analytically determine the furthest point.</p>
+
+<p>The first approach produced a really nice plot of London when the second approach failed to pass the question of the border of an area,</p>
+
+<p>In this blog post, I try to override this issue.</p>
+
+<h1> Method </h1>
+
+<p>In the alphahull package, the <code class="highlighter-rouge">ashape</code> function allows to create a close constraint, based on voronoi. It calculates both the constraint and the voronoi vertices.</p>
+
+<p>The function <code class="highlighter-rouge">pnt.in.poly</code> of the SDMTools allow to flag the voronoi vertices which are inside the constraint.</p>
+
+<p>Combining both allows me to create a constraint Voronoi diagram in which I could look for the point the furthest from any subway station.</p>
+
+<p><img src="/image/London.gif" alt="london gif " /></p>
+
+<h1> The code </h1>
+
+<h3> Libraries, data, raw map </h3>
+
+<p>Coordinates of stations could be found on the TFL website.
+The function <code class="highlighter-rouge">get_map()</code> plot a map in a really efficient way and quite fast.</p>
+
+<pre><code class="prettyprint ">library(ggmap)
+library(alphahull)
+library(SDMTools) 
+library(devtools)
+library(animation)
+library(ImageMagick)
+
+# load the libraries:
+l &lt;- lapply(c(&quot;data.table&quot;, &quot;alphahull&quot;, &quot;ggmap&quot;, &quot;SDMTools&quot;, &quot;sp&quot;), require, character.only = T)
+
+  # First, get the data:
+coord.station &lt;- fread(&quot;tfl.stations.csv&quot;)
+
+  # Get the map of London:
+london12 &lt;- get_map(location = &quot;London&quot;, zoom = 12)
+zones.london.plot12 &lt;- ggmap(london12, maprange = F) 
+
+  # only zones 1 &amp; inside the plot:
+coord.station[, zone2 := ifelse(type == &quot;dlr&quot;, &quot;dlr&quot;, zone) ]
+coord.station.min &lt;- coord.station[zone == 1, list(lon, lat, zone2)]
+
+  # plot stations
+zones.london &lt;- zones.london.plot12 +
+          geom_point(data = coord.station.min, aes(x = lon, y = lat, colour = as.factor(zone2)), size = 1.5) +
+          scale_colour_discrete(name = &quot;Zone&quot;)</code></pre>
+
+<h3> Voronoi &amp; constraint calculation </h3>
+
+<p>The alpha parameter control the alpha-shape. The smallest the value, the more complicated the constraint.</p>
+
+<pre><code class="prettyprint ">  # voronoi and constraint:
+alphashape &lt;- ashape(coord.station.min$lon, coord.station.min$lat, alpha = 0.021)
+
+  # voronoi summits:
+voronoi.full &lt;- data.table(alphashape$delvor.obj$mesh)
+polygon.ext &lt;- data.frame(alphashape$edges)
+
+# plot the voronoi diagram without constraint:
+plot.no.map.voronoi &lt;- zones.london +
+  geom_segment(data = voronoi.full, aes(x = mx1, y = my1, xend = mx2, yend = my2), colour = &quot;red&quot;, size=0.25) +
+  geom_segment(data = polygon.ext, aes(x = x1, y = y1, xend = x2, yend = y2), colour = &quot;blue&quot;, size=0.25)
+plot.no.map.voronoi</code></pre>
+
+<p><img src="http://data-laborer.euassets/images/figures/source/2015-07-16-Voronoi_station/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" /></p>
+
+<p>Now, we have the constraint and the voronoi diagram on all the subways station of the zone 1.</p>
+
+<h3> Keep voronoi summits inside the constraint </h3>
+
+<p>As I want to keep only the voronoi summit inside the constraint, I use the function <code class="highlighter-rouge">pnt.in.poly</code> to flag summit outside the constraint.</p>
+
+<p>The function takes only the ordered summit of the constraint as the polygon. The first loop reorder the summits.</p>
+
+<pre><code class="prettyprint "> ## problem: voronoi summit are outside the polygon.
+  #we are looking for the voronoi summits which are inside the polygon.
+  # our issue here is that the function pnt.in.polygon need an ordered table of the summit.
+  # And the function alphahull release an unordered set of points.
+
+  # voronoi summits:
+voronoi.summit &lt;- unique(rbind(voronoi.full[, list(mx1, my1)], voronoi.full[, list(mx2, my2)], use.names = F))
+
+  # do a channel with the variables ind1 et ind2:
+nb.edges &lt;- dim(polygon.ext)[1]
+  
+  # initialisation of the table:
+order &lt;- data.frame(order = rep(2, nb.edges), lon = rep(0, nb.edges), lat = rep(0, nb.edges), stringsAsFactors = F)
+
+  # new table to modify:
+polygon.ext2 &lt;- polygon.ext
+
+order[1, ] &lt;- polygon.ext2[1, c(&quot;ind1&quot;, &quot;x1&quot;, &quot;y1&quot;)]
+polygon.ext2 &lt;- polygon.ext2[-1, ]
+  
+  # loop through the summits to select each time the next one:
+for (i in 2: nb.edges) { # i &lt;- 2
+  if(order[i-1, 1] %in% polygon.ext2$ind1) { order[i, ] &lt;- polygon.ext2[which(polygon.ext2$ind1 == order[i-1, 1]), c(&quot;ind2&quot;, &quot;x2&quot;, &quot;y2&quot;)]
+  polygon.ext2 &lt;- polygon.ext2[-which(polygon.ext2$ind1 == order[i-1, 1]), ]
+  } else { order[i, ] &lt;- polygon.ext2[which(polygon.ext2$ind2 == order[i-1, 1]), c(&quot;ind1&quot;, &quot;x1&quot;, &quot;y1&quot;)]
+  polygon.ext2 &lt;- polygon.ext2[-which(polygon.ext2$ind2 == order[i-1, 1]), ]}
+}
+
+  # list of voronoi summits which are in the polygon:
+voronoi.constrain &lt;- data.table(pnt.in.poly(voronoi.summit, order[, c(&quot;lon&quot;, &quot;lat&quot;)]))
+
+  # voronoi inside the polygon:
+voronoi.part &lt;- merge(voronoi.full, voronoi.constrain, by = c(&quot;mx1&quot;, &quot;my1&quot;), all.x = T)
+setnames(voronoi.constrain, c(&quot;mx1&quot;, &quot;my1&quot;), c(&quot;mx2&quot;, &quot;my2&quot;))
+voronoi.part &lt;- merge(voronoi.part, voronoi.constrain, by = c(&quot;mx2&quot;, &quot;my2&quot;), all.x = T)
+
+   # plot the voronoi diagram with constraint &amp; only inside edge of voronoi diagram:
+zones.london.vor &lt;- zones.london +
+  geom_segment(data = polygon.ext, aes(x = x1, y = y1, xend = x2, yend = y2), colour = &quot;blue&quot;, size = 0.25) +
+  geom_segment(data = voronoi.part[pip.x == 1 &amp; pip.y == 1, ], aes(x = mx2, y = my2, xend = mx1, yend = my1), colour = &quot;red&quot;, size = 0.25) 
+zones.london.vor</code></pre>
+
+<p><img src="http://data-laborer.euassets/images/figures/source/2015-07-16-Voronoi_station/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
+
+<h3>  Finding the furthest point from the subway </h3>
+
+<p>I am looking for the voronoi summit the furthest from any subway station.
+I use the <code class="highlighter-rouge">spDistsN1</code> function to calculate the distance on a sphere.</p>
+
+<pre><code class="prettyprint ">### Finding the furthest point:
+  # voronoi summit in the polygon
+voronoi.constrain.lim &lt;- voronoi.constrain[pip == 1, list(mx2, my2)]
+
+  # matrix of distance between all the station and the voronoi summits: 
+matrix.dist &lt;- apply(voronoi.constrain.lim, 1, function(eachPoint) spDistsN1(as.matrix(coord.station.min[, list(lon, lat)]), eachPoint, longlat = T))
+
+  # for each colum, the lowest distance:
+min.dist &lt;- apply(matrix.dist, 2, min)
+
+  # coordonates of the furthest point:
+min.coordinates &lt;- voronoi.constrain.lim[which(matrix.dist == max(min.dist), arr.ind = T)[2]]
+
+  # Thirdly, plotting the point:
+zones.london.point &lt;- zones.london.vor +
+   geom_point(data = min.coordinates, aes(x = mx2, y = my2), color = &quot;green&quot;, size = 2) +
+  annotate(&quot;text&quot;, x = min.coordinates$mx2, y = min.coordinates$my2 - 0.003, label = &quot;The albert memorial&quot;)
+zones.london.point</code></pre>
+
+<p><img src="http://data-laborer.euassets/images/figures/source/2015-07-16-Voronoi_station/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
+
+<p>In the end, it appears that the furthest point from the subway in London is near the Albert memorial. If you already find yourself hanging there and thinking that the next subway station was quite far, be rassured, it’s definitely normal. :)</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#alphahull" class="page__taxonomy-item" rel="tag">alphahull</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#data-visualisation" class="page__taxonomy-item" rel="tag">data visualisation</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#geometry" class="page__taxonomy-item" rel="tag">geometry</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#r" class="page__taxonomy-item" rel="tag">R</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#statistic" class="page__taxonomy-item" rel="tag">Statistic</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://data-laborer.eu/categories/#data-visualisation" class="page__taxonomy-item" rel="tag">Data visualisation</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-07-16T00:00:00+01:00">July 16, 2015</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=SwiftAMHE&text=How Far am I From the Next Tube Station? https://data-laborer.eu/data%20visualisation/Voronoi_station/" class="btn btn--twitter" title="Share on Twitter"><i class="fa fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https://data-laborer.eu/data%20visualisation/Voronoi_station/" class="btn btn--facebook" title="Share on Facebook"><i class="fa fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=https://data-laborer.eu/data%20visualisation/Voronoi_station/" class="btn btn--google-plus" title="Share on Google Plus"><i class="fa fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://data-laborer.eu/data%20visualisation/Voronoi_station/" class="btn btn--linkedin" title="Share on LinkedIn"><i class="fa fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="https://data-laborer.eu/hack/Mail_to_senateur/" class="pagination--pager" title="Send an Email to all your Representatives. With R.
+">Previous</a>
+    
+    
+      <a href="https://data-laborer.eu/statistic/Number_of_Cluster/" class="pagination--pager" title="August Coding Dojo: Choosing the Optimal Number of Cluster
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+    <h4 class="page__comments-title">Leave a Comment</h4>
+    <section id="disqus_thread"></section>
+  
+</div>
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      
+        <h4 class="page__related-title">You May Also Enjoy</h4>
+      
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/TheRapeofEuropa.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/hack/embedocputest/" rel="permalink">Include R Output in your Blog Pages with Opencpu
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Nov 27, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  1 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Short exemple of how to include R output in a blog post with opencpu
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/flexocpu.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/r/Flexocpu/" rel="permalink">Dashboarding with Flexdashboard and Opencpu
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Oct 31, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  7 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">How to use opencpu as a back end for flexdashboard
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/earl.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/earl/EARL_2016_review/" rel="permalink">EARL 2016 Review
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Sep 20, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">EARL 2016 review
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/logog_oc.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/hack/Second_ropencorporate_pckg/" rel="permalink">Explore Company Officers of EDF with Ropencorporate
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> May 22, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Exemple of how to use the Ropencorporate package
+</p>
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/SwiftAMHE"><i class="fa fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="http://github.com/YvesCR"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    <li><a href="https://data-laborer.eu/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2017 Yves Crutain. Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+      </footer>
+    </div>
+
+    <script src="https://data-laborer.eu/assets/js/main.min.js"></script>
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71940303-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+  	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  	var disqus_shortname = 'datalaborereu';
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function() {
+  		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  	})();
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function () {
+  		var s = document.createElement('script'); s.async = true;
+  		s.type = 'text/javascript';
+  		s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  		(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+  	}());
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+
+
+  </body>
+</html>
