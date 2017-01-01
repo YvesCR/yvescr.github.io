@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Dashboarding with Flexdashboard and Opencpu - Data laborer</title>
+
+
+
+
+<meta name="description" content="How to use opencpu as a back end for flexdashboard">
+
+
+
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="Data laborer">
+<meta property="og:title" content="Dashboarding with Flexdashboard and Opencpu">
+
+
+  <link rel="canonical" href="https://data-laborer.eu/r/Flexocpu/">
+  <meta property="og:url" content="https://data-laborer.eu/r/Flexocpu/">
+
+
+
+  <meta property="og:description" content="How to use opencpu as a back end for flexdashboard">
+
+
+
+  <meta name="twitter:site" content="@SwiftAMHE">
+  <meta name="twitter:title" content="Dashboarding with Flexdashboard and Opencpu">
+  <meta name="twitter:description" content="How to use opencpu as a back end for flexdashboard">
+  <meta name="twitter:url" content="https://data-laborer.eu/r/Flexocpu/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+  
+
+  
+
+
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2016-10-31T00:00:00+01:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Yves Crutain",
+      "url" : "https://data-laborer.eu",
+      "sameAs" : ["https://twitter.com/swiftamhe","https://www.linkedin.com/in/yves-crutain-0b430324"]
+    }
+  </script>
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://data-laborer.eu/feed.xml" type="application/atom+xml" rel="alternate" title="Data laborer Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://data-laborer.eu/assets/css/main.css">
+
+<meta http-equiv="cleartype" content="on">
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+    <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <button><div class="navicon"></div></button>
+        <ul class="visible-links">
+          <li class="masthead__menu-item masthead__menu-item--lg"><a href="https://data-laborer.eu/">Data laborer</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/portfolio/">List View</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/categories/">Categories</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/about/index.html">About</a></li>
+          
+        </ul>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    
+
+
+
+<div id="main" role="main">
+  
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Dashboarding with Flexdashboard and Opencpu">
+    <meta itemprop="description" content="How to use opencpu as a back end for flexdashboard">
+    <meta itemprop="datePublished" content="October 31, 2016">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Dashboarding with Flexdashboard and Opencpu
+</h1>
+          
+            <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  6 minute read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        <h2 id="abstract">Abstract</h2>
+
+<p>In this blog post, I present an exemple of mix use of opencpu and flexdashboard. 
+Opencpu is used as the back end of the dashboard and flexdashboard as the front end.</p>
+
+<p>A live demonstration is available <a href="https://yvescr.ocpu.io/flexocpu/www/">here</a>.</p>
+
+<p>The originality lie in the fact that the js to call the api is coded in the Rmd. This allows me to concentrate all the front-end code in one script, the rmd.</p>
+
+<p>The process to create the dashboard is the following:</p>
+
+<ul>
+  <li>Create the R package, the back-end functions</li>
+  <li>Create a flexdashboard containing the html structure and js code</li>
+</ul>
+
+<p>A script is used to render the flexdashboard, build the package and serve the updated dashboard.</p>
+
+<h2 id="opencpu">Opencpu</h2>
+
+<p><a href="opencpu.org">Opencpu</a> is a system that provides a reliable and interoperable HTTP API for data analysis based on R. It allows to easily implement R in a production environment through the use of an API to serve R scripts structured as a package.</p>
+
+<p>At first, it is a complex subject, as the concept of API needs to be understood, which is not a native knowledge for a lot of analysts.</p>
+
+<p>To ease up beginners, I advice to read these two resources, which describe opencpu case studies:</p>
+
+<ul>
+  <li><a href="https://medium.com/@TheLaddersEng/data-scientists-toolbox-for-data-infrastructure-i-e25391f145a3#.dg3csfgf1">Personnalised results with opencpu</a></li>
+  <li><a href="https://earlconf.com/london/speaker/hxcuw">Prefetch url with opencpu</a></li>
+</ul>
+
+<p>To summarize, opencpu allows to run R scripts on demand.</p>
+
+<p>There is alternatives to opencpu.
+At the last EARL conference, two speakers were using different methods to use R as a real time back-end :</p>
+
+<ul>
+  <li><a href="https://earlconf.com/london/speaker/6zbc3">Real-time scoring in marketplace</a></li>
+  <li><a href="https://earlconf.com/london/speaker/8oj31">Real-time predictive analytic in medical claim processing</a></li>
+</ul>
+
+<p>In the first case, an API had been built in Ruby to wrap R code. In the second case, a R script is called in batch by a script in java.</p>
+
+<p>The main caveat of opencpu is the security: it is easy to inject code and uneasy to hide data. I use openCPU behind a corporate firewall so I don’t have to worry too much about how secure it can be.</p>
+
+<h2 id="flexdashboard-and-shiny">Flexdashboard and shiny</h2>
+
+<p><a href="http://rmarkdown.rstudio.com/flexdashboard/">Flexdashboard</a> is a package by Rstudio which allows to do a dashboard with Rmarkdown.</p>
+
+<p>You can create a standalone document where the interactivity is limited at the htmlwidget packages level.</p>
+
+<p>You can, for exemple, include a leaflet map, a D3 chart or a plotly chart.</p>
+
+<p>For more complex customization, the traditional way is to use shiny as the back-end to create fully customized dashboard; sometimes a good alternative to Tableau or BO.</p>
+
+<h2 id="using-opencpu-with-flexdashboard">Using opencpu with flexdashboard</h2>
+
+<h3 id="creation-of-the-stack">Creation of the stack</h3>
+
+<p>To create the dashboard, the first thing to do is to code the back-end: the R package which is served by opencpu. The front-end come in second place.</p>
+
+<p>The main reference for that is the book <a href="r-pkgs.had.co.nz">R packages</a> by Hadley Wickham.</p>
+
+<p>To test your package, the easiest way is to use the <a href="https://public.opencpu.org/ocpu/test/">OpenCPU API explorer</a>.
+You can enter your parameter and get the live result in a more fashion way than with a call with cURL.</p>
+
+<p>In my exemple, functions return either a json, a R plot or an html file.</p>
+
+<p>For the front-end, I create two scripts:</p>
+
+<ul>
+  <li>A script “Index.Rmd”, which content the flexdashboard structure of my dashboard.
+    <ul>
+      <li>The script need to be rendered as “Index.html” in the inst/www folder.</li>
+    </ul>
+  </li>
+  <li>A script “setup_package.R” which contain the steps to update the package.
+    <ul>
+      <li>The name can be different.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The Rmd script use the flexdashboard structure but most of the content is js code to get the API content or js code to produce the input buttons. It is a mix of html, R and js code.</p>
+
+<h3 id="update-the-dashboard">Update the dashboard</h3>
+
+<p>When I want to modify my code, I use the script “setup_package.R” to update the dashboard. The process contain 4 steps:</p>
+
+<ul>
+  <li>Render the Rmarkdown file “Index.Rmd” to “Index.html” in inst/www</li>
+  <li>Build the package</li>
+  <li>Install the package</li>
+  <li>Open the browser at the URL of the dashboard.</li>
+</ul>
+
+<p>In addition, the first time that the dashboard is updated, the opencpu server need to be started.</p>
+
+<p>On my exemple, the whole process take less than 10 sec, which is enough to keep my attention focused on the task.</p>
+
+<p>All the code could be found on my github account, <a href="https://github.com/YvesCR/flexocpu">here</a>.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#js" class="page__taxonomy-item" rel="tag">js</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#opencpu" class="page__taxonomy-item" rel="tag">opencpu</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#r" class="page__taxonomy-item" rel="tag">R</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://data-laborer.eu/categories/#r" class="page__taxonomy-item" rel="tag">R</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2016-10-31T00:00:00+01:00">October 31, 2016</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=SwiftAMHE&text=Dashboarding with Flexdashboard and Opencpu https://data-laborer.eu/r/Flexocpu/" class="btn btn--twitter" title="Share on Twitter"><i class="fa fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https://data-laborer.eu/r/Flexocpu/" class="btn btn--facebook" title="Share on Facebook"><i class="fa fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=https://data-laborer.eu/r/Flexocpu/" class="btn btn--google-plus" title="Share on Google Plus"><i class="fa fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://data-laborer.eu/r/Flexocpu/" class="btn btn--linkedin" title="Share on LinkedIn"><i class="fa fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="https://data-laborer.eu/earl/EARL_2016_review/" class="pagination--pager" title="EARL 2016 Review
+">Previous</a>
+    
+    
+      <a href="https://data-laborer.eu/hack/embedocputest/" class="pagination--pager" title="Include R Output in your Blog Pages with Opencpu
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+    <h4 class="page__comments-title">Leave a Comment</h4>
+    <section id="disqus_thread"></section>
+  
+</div>
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      
+        <h4 class="page__related-title">You May Also Enjoy</h4>
+      
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/TheRapeofEuropa.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/hack/embedocputest/" rel="permalink">Include R Output in your Blog Pages with Opencpu
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Nov 27, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  1 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Short exemple of how to include R output in a blog post with opencpu
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/earl.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/earl/EARL_2016_review/" rel="permalink">EARL 2016 Review
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Sep 20, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">EARL 2016 review
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/logog_oc.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/hack/Second_ropencorporate_pckg/" rel="permalink">Explore Company Officers of EDF with Ropencorporate
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> May 22, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Exemple of how to use the Ropencorporate package
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/Abstract-art-britto-qb140.jpg"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/hack/Presentation_of_the_Ropencorporate_package/" rel="permalink">Ropencorporate: A Package to Access Opencorporate API
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> May 2, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  11 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Presentation of the version 0.1 of the Ropencorporate package
+</p>
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/SwiftAMHE"><i class="fa fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="http://github.com/YvesCR"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    <li><a href="https://data-laborer.eu/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2017 Yves Crutain. Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+      </footer>
+    </div>
+
+    <script src="https://data-laborer.eu/assets/js/main.min.js"></script>
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71940303-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+  	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  	var disqus_shortname = 'datalaborereu';
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function() {
+  		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  	})();
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function () {
+  		var s = document.createElement('script'); s.async = true;
+  		s.type = 'text/javascript';
+  		s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  		(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+  	}());
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+
+
+  </body>
+</html>

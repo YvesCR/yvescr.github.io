@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Choropleth Map of the UK with R - Part II: Is Central London a Ghost Town? - Data laborer</title>
+
+
+
+
+<meta name="description" content="Create new UK regions based on density.">
+
+
+
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="Data laborer">
+<meta property="og:title" content="Choropleth Map of the UK with R - Part II: Is Central London a Ghost Town?">
+
+
+  <link rel="canonical" href="https://data-laborer.eu/data%20visualisation/MapUKpartII/">
+  <meta property="og:url" content="https://data-laborer.eu/data%20visualisation/MapUKpartII/">
+
+
+
+  <meta property="og:description" content="Create new UK regions based on density.">
+
+
+
+  <meta name="twitter:site" content="@SwiftAMHE">
+  <meta name="twitter:title" content="Choropleth Map of the UK with R - Part II: Is Central London a Ghost Town?">
+  <meta name="twitter:description" content="Create new UK regions based on density.">
+  <meta name="twitter:url" content="https://data-laborer.eu/data%20visualisation/MapUKpartII/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+  
+
+  
+
+
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-12-28T00:00:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Yves Crutain",
+      "url" : "https://data-laborer.eu",
+      "sameAs" : ["https://twitter.com/swiftamhe","https://www.linkedin.com/in/yves-crutain-0b430324"]
+    }
+  </script>
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://data-laborer.eu/feed.xml" type="application/atom+xml" rel="alternate" title="Data laborer Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://data-laborer.eu/assets/css/main.css">
+
+<meta http-equiv="cleartype" content="on">
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+    <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <button><div class="navicon"></div></button>
+        <ul class="visible-links">
+          <li class="masthead__menu-item masthead__menu-item--lg"><a href="https://data-laborer.eu/">Data laborer</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/portfolio/">List View</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/categories/">Categories</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://data-laborer.eu/about/index.html">About</a></li>
+          
+        </ul>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    
+
+
+
+<div id="main" role="main">
+  
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Choropleth Map of the UK with R - Part II: Is Central London a Ghost Town?">
+    <meta itemprop="description" content="Create new UK regions based on density.">
+    <meta itemprop="datePublished" content="December 28, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Choropleth Map of the UK with R - Part II:
+ Is Central London a Ghost Town?
+</h1>
+          
+            <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  7 minute read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        <p>In the first part, we get a nice tool of visualisation of the district postcode area, a chloropeth Map.</p>
+
+<p>Now, I want to do some real analysis on the districts.</p>
+
+<p>In the first part, I have calculated the area of the UK districts.</p>
+
+<p>Crawling on the british statistic national office, I found a table with the population at the district postcode level. At this level of accuracy, only a few metrics are available. But having the area and the population, I could calculate the density.</p>
+
+<p>Before to go further, a first mapping of these data show huge inconstency looking at places I would expect highly populated.
+For exemple, Central London shows a low density, where I would expect a high density. The perfect exemple is the number of inhabitants in EC1A, 878 in 2011. This number is highly surprising.
+Consequently, what I represent here is not the reality, it is the snapshot captured in the data, made by  humans and as such could be far from the reality.</p>
+
+<h1 id="mapping-the-density">Mapping the density</h1>
+
+<p>I made here a small map of the density in the UK:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="w">  </span><span class="n">theme_map_uk</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"right"</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">axis.ticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">axis.text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">axis.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">panel.margin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="s2">"mm"</span><span class="p">))</span><span class="w">
+
+</span><span class="n">ggmap</span><span class="p">(</span><span class="n">map</span><span class="p">)</span><span class="w">  </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_polygon</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pop2</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lng</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lat</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">density.cut</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+        </span><span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">brewer.pal</span><span class="p">(</span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="s2">"Greens"</span><span class="p">),</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Density of\n Population\n(pop/km2)"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_map_uk</span></code></pre></figure>
+
+<p><img src="http://data-laborer.eu/assets/images/figures/source/2015-12-28-MapUKpartII/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" /></p>
+
+<p>A bigger one (45 Mb) could be found with the code to produce it in my github account, <a href="https://github.com/YvesCR/blog/blob/gh-pages/image/Big_UK_Density_cluster_Plot.png">here</a>.</p>
+
+<p>The code to produce the map could be found there as well. I tried to plot a map so detailled that you could zoom to distinguish the most tiny postcode area, like EC1 in central London.</p>
+
+<h1 id="further-analysis">Further Analysis</h1>
+
+<p>Even considering that the data in the most dense area is biased, it is still posible to analisys this data set. Here, I will do a spatial clustering of the districts looking at the density.</p>
+
+<p>To have a coherent cluster, I took the logarithm of the density, as the density goes from 0 to 400K people per km2.</p>
+
+<p>I limit the lower bound of size of cluster to 10, to avoid outliers to create clusters.</p>
+
+<p>My first attempt with k-means showed a really low resilience of the clustering looking at the initial points and the seed.
+To counter that effect, I tried a bagging k-means cluster, which didn’t created nice looking region.</p>
+
+<p>In the end, I choosed a simple hierarchical cluster with the ward measure.</p>
+
+<p>We took the mean of the coordinates which make the polygon of the district as the center of the district. It introduces some bias in direction of the most accidented side of the district, but it is enough for what I want to achieve.</p>
+
+<p>With a final number of cluster of 15, it is possible to define new British regions based on the density of population.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># Ward Hierarchical Clustering. pop4 is a data.table
+</span><span class="n">d</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dist</span><span class="p">(</span><span class="n">pop4</span><span class="p">[,</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">density2</span><span class="p">)],</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"euclidean"</span><span class="p">)</span><span class="w"> </span><span class="c1"># distance matrix
+</span><span class="n">fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">hclust</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s2">"ward.D2"</span><span class="p">)</span><span class="w">
+</span><span class="n">groups</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cutree</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="m">15</span><span class="p">)</span><span class="w"> </span><span class="c1"># cut tree into 15 clusters
+</span><span class="w">
+</span><span class="c1">#pop4b &lt;- cbind(pop4, predict = bclust.res$cluster)
+</span><span class="n">pop4b</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cbind</span><span class="p">(</span><span class="n">pop4</span><span class="p">,</span><span class="w"> </span><span class="n">predict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">groups</span><span class="p">)</span><span class="w">
+</span><span class="n">pop4c</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">merge</span><span class="p">(</span><span class="n">pop2</span><span class="p">,</span><span class="w"> </span><span class="n">pop4b</span><span class="p">[,</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">predict</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)],</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"name"</span><span class="p">,</span><span class="w"> </span><span class="n">all.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">)</span><span class="w">
+</span><span class="n">pop4c</span><span class="p">[,</span><span class="w"> </span><span class="n">density.cut.predict</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">density</span><span class="p">)),</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"predict"</span><span class="p">]</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggmap</span><span class="p">(</span><span class="n">map</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_polygon</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pop4c</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lng</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lat</span><span class="w">
+      </span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">density.cut.predict</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+    </span><span class="n">scale_fill_continuous</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Density of\n Population\n(log(pop/km2))"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"right"</span><span class="w">
+      </span><span class="p">,</span><span class="w"> </span><span class="n">axis.ticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+      </span><span class="p">,</span><span class="w"> </span><span class="n">axis.text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+      </span><span class="p">,</span><span class="w"> </span><span class="n">axis.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+      </span><span class="p">,</span><span class="w"> </span><span class="n">panel.margin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="s2">"mm"</span><span class="p">))</span></code></pre></figure>
+
+<p><img src="http://data-laborer.eu/assets/images/figures/source/2015-12-28-MapUKpartII/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
+
+<p>With a zoom on Greater London:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggmap</span><span class="p">(</span><span class="n">map2</span><span class="p">)</span><span class="w">  </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_polygon</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pop4c</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lng</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lat</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">density.cut.predict</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+    </span><span class="n">scale_fill_continuous</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Density of\n Population\n(log(pop/km2))"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+    </span><span class="n">coord_map</span><span class="p">(</span><span class="n">xlim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">ylim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">51</span><span class="p">,</span><span class="w"> </span><span class="m">52</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_map_uk</span></code></pre></figure>
+
+<p><img src="http://data-laborer.eu/assets/images/figures/source/2015-12-28-MapUKpartII/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" /></p>
+
+<p>We could clearly sees that in central London, the numbers are oddly low, then suddenly very high when we go further and it decrease with the distance.</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>In the end, it is really easy to create new regions and to make really accurate clusters of district. The question of the small number of inhabitants in central London is definitely weird and appeal new analysis, looking for exemple at the number of offices and houses. If a majority of the constructions are offices, the mistery would be resolved. Otherwise, in spite of the tremendous amount of activity, these part of London could be nicknamed as “the ghost town”.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#ggmap" class="page__taxonomy-item" rel="tag">ggmap</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#london" class="page__taxonomy-item" rel="tag">London</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://data-laborer.eu/tags/#r" class="page__taxonomy-item" rel="tag">R</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://data-laborer.eu/categories/#data-visualisation" class="page__taxonomy-item" rel="tag">Data visualisation</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-12-28T00:00:00+00:00">December 28, 2015</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=SwiftAMHE&text=Choropleth Map of the UK with R - Part II:
+ Is Central London a Ghost Town? https://data-laborer.eu/data%20visualisation/MapUKpartII/" class="btn btn--twitter" title="Share on Twitter"><i class="fa fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https://data-laborer.eu/data%20visualisation/MapUKpartII/" class="btn btn--facebook" title="Share on Facebook"><i class="fa fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=https://data-laborer.eu/data%20visualisation/MapUKpartII/" class="btn btn--google-plus" title="Share on Google Plus"><i class="fa fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://data-laborer.eu/data%20visualisation/MapUKpartII/" class="btn btn--linkedin" title="Share on LinkedIn"><i class="fa fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="https://data-laborer.eu/jekyll/Why_blogging_with_jekyll/" class="pagination--pager" title="Why I Moved to a Jekyll Blog
+">Previous</a>
+    
+    
+      <a href="https://data-laborer.eu/Unicycle_comparison/" class="pagination--pager" title="How to Choose your Electric Unicycle/Monowheel
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+    <h4 class="page__comments-title">Leave a Comment</h4>
+    <section id="disqus_thread"></section>
+  
+</div>
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      
+        <h4 class="page__related-title">You May Also Enjoy</h4>
+      
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/TheRapeofEuropa.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/hack/embedocputest/" rel="permalink">Include R Output in your Blog Pages with Opencpu
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Nov 27, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  1 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Short exemple of how to include R output in a blog post with opencpu
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/flexocpu.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/r/Flexocpu/" rel="permalink">Dashboarding with Flexdashboard and Opencpu
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Oct 31, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  7 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">How to use opencpu as a back end for flexdashboard
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/earl.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/earl/EARL_2016_review/" rel="permalink">EARL 2016 Review
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Sep 20, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">EARL 2016 review
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/logog_oc.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/hack/Second_ropencorporate_pckg/" rel="permalink">Explore Company Officers of EDF with Ropencorporate
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> May 22, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Exemple of how to use the Ropencorporate package
+</p>
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/SwiftAMHE"><i class="fa fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="http://github.com/YvesCR"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    <li><a href="https://data-laborer.eu/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2017 Yves Crutain. Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+      </footer>
+    </div>
+
+    <script src="https://data-laborer.eu/assets/js/main.min.js"></script>
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71940303-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+  	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  	var disqus_shortname = 'datalaborereu';
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function() {
+  		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  	})();
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function () {
+  		var s = document.createElement('script'); s.async = true;
+  		s.type = 'text/javascript';
+  		s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  		(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+  	}());
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+
+
+  </body>
+</html>
