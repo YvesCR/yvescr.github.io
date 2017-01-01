@@ -172,7 +172,7 @@
 
 <p>Recently, I discovered another way to do it: the <a href="http://www.theairwheel.com/">electric unicycle/monowheel</a>. It’s a green way to commute and energy efficient.</p>
 
-<p>But as for any new product, there is not much reviews or feedback of the products. After a few time on the dedicated forums, I found <a href="https://docs.google.com/spreadsheets/d/1Zv1_fAAL3xKCGDEv64Rg7jpeim4oytbMx8mmXKUFThQ/edit?pref=2&amp;pli=1#gid=0">that spreadsheet</a>. It was out of date so I created a new one with the new products and the correct prices( as of 18 déc. 2016).</p>
+<p>But as for any new product, there is not much reviews or feedback of the products. After a few time on the dedicated forums, I found <a href="https://docs.google.com/spreadsheets/d/1Zv1_fAAL3xKCGDEv64Rg7jpeim4oytbMx8mmXKUFThQ/edit?pref=2&amp;pli=1#gid=0">that spreadsheet</a>. It was out of date so I created a new one with the new products and the correct prices( as of 01 janv. 2017).</p>
 
 <p>The main parameter to take in account are the maximal speed, the weight, the autonomy and the price. The maximal speed should not be too low, but over 20 kph is useless. For the weight, the less weight is the better, as is the price (but bonus if it is made in UK). The autonomy is an important point as well, but I don’t plan to do trip of more than two hours.</p>
 
@@ -186,7 +186,7 @@
 
 <p>Now that we know how the PCA separate the unicycle, let’s have a look at the brand on these scales.</p>
 
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">plot</span><span class="p">(</span><span class="n">res.pca</span><span class="p">,</span><span class="w"> </span><span class="n">choix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ind"</span><span class="p">,</span><span class="w"> </span><span class="n">habillage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">col.hab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="s2">"quali"</span><span class="p">,</span><span class="w"> </span><span class="n">invisible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ind"</span><span class="p">)</span></code></pre></figure>
+<pre><code class="prettyprint ">plot(res.pca, choix = &quot;ind&quot;, habillage = 8, col.hab = 8, label =  &quot;quali&quot;, invisible = &quot;ind&quot;)</code></pre>
 
 <p><img src="http://data-laborer.eu/assets/images/figures/source/2016-02-13-Unicycle_comparison/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
 
@@ -199,9 +199,9 @@ For a less expensive model, we could look for a Macwheel or a Fastwheel. But the
 
 <p>The idea, here, is that if there is a brand which have lower prices than the others considering the others variables of the product.</p>
 
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">summary</span><span class="p">(</span><span class="n">res.lm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lm</span><span class="p">(</span><span class="n">price</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">autonomy</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">weight</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">wheel</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">climb</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comparison.norm</span><span class="p">))</span></code></pre></figure>
+<pre><code class="prettyprint ">summary(res.lm &lt;- lm(price ~ autonomy + speed + weight + wheel + climb, data = comparison.norm))</code></pre>
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text">## 
+<pre><code>## 
 ## Call:
 ## lm(formula = price ~ autonomy + speed + weight + wheel + climb, 
 ##     data = comparison.norm)
@@ -224,20 +224,21 @@ For a less expensive model, we could look for a Macwheel or a Fastwheel. But the
 ## Residual standard error: 0.6987 on 39 degrees of freedom
 ##   (13 observations deleted due to missingness)
 ## Multiple R-squared:  0.5672,	Adjusted R-squared:  0.5118 
-## F-statistic: 10.22 on 5 and 39 DF,  p-value: 2.589e-06</code></pre></figure>
+## F-statistic: 10.22 on 5 and 39 DF,  p-value: 2.589e-06
+</code></pre>
 
-<p>The R^2^ obtained is of 0.5, which indicate a low fit of the price by the others variables.
+<p>The R² obtained is of 0.5, which indicate a low fit of the price by the others variables.
 Autonomy and speed, both  related to the battery are significative variables.</p>
 
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">plot</span><span class="p">(</span><span class="n">res.lm</span><span class="p">,</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">))</span></code></pre></figure>
+<pre><code class="prettyprint ">plot(res.lm, which = c(1:4))</code></pre>
 
 <p><img src="http://data-laborer.eu/assets/images/figures/source/2016-02-13-Unicycle_comparison/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" /><img src="http://data-laborer.eu/assets/images/figures/source/2016-02-13-Unicycle_comparison/unnamed-chunk-7-2.png" alt="plot of chunk unnamed-chunk-7" /><img src="http://data-laborer.eu/assets/images/figures/source/2016-02-13-Unicycle_comparison/unnamed-chunk-7-3.png" alt="plot of chunk unnamed-chunk-7" /><img src="http://data-laborer.eu/assets/images/figures/source/2016-02-13-Unicycle_comparison/unnamed-chunk-7-4.png" alt="plot of chunk unnamed-chunk-7" /></p>
 
 <p>Two outliers appear, here, rows 45 and 27.</p>
 
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">comparison.df</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="m">45</span><span class="p">,</span><span class="w"> </span><span class="m">27</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">11</span><span class="p">,</span><span class="w"> </span><span class="m">7</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">),</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">]</span></code></pre></figure>
+<pre><code class="prettyprint ">comparison.df[c(45, 27), - c(11, 7, 5), with = F]</code></pre>
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text">##        brand model autonomy speed weight  wh charging.time price
+<pre><code>##        brand model autonomy speed weight  wh charging.time price
 ## 1: SOLOWHEEL  1500       12    18     12 132            NA  1890
 ## 2: FIREWHEEL  F779      100    20     15 776            NA  1890
 ##                             equipements.intégrés
@@ -248,14 +249,15 @@ Autonomy and speed, both  related to the battery are significative variables.</p
 ## 2: Très bonne autonomie. Jolie design                  Poids. Prix    16
 ##    climb
 ## 1:    15
-## 2:    20</code></pre></figure>
+## 2:    20
+</code></pre>
 
 <p>They are both overpriced looking at their capacities.
 The Solowheel 1500 especially is really expensive. The Firewheel have a huge price due to a huge battery, giving an impressive autonomy.</p>
 
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">summary</span><span class="p">(</span><span class="n">res.lm2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lm</span><span class="p">(</span><span class="n">price</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">autonomy</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">weight</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">wheel</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">climb</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comparison.norm</span><span class="p">[</span><span class="o">-</span><span class="nf">c</span><span class="p">(</span><span class="m">45</span><span class="p">,</span><span class="w"> </span><span class="m">27</span><span class="p">),</span><span class="w"> </span><span class="p">]))</span></code></pre></figure>
+<pre><code class="prettyprint ">summary(res.lm2 &lt;- lm(price ~ autonomy + speed + weight + wheel + climb, data = comparison.norm[-c(45, 27), ]))</code></pre>
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text">## 
+<pre><code>## 
 ## Call:
 ## lm(formula = price ~ autonomy + speed + weight + wheel + climb, 
 ##     data = comparison.norm[-c(45, 27), ])
@@ -278,15 +280,16 @@ The Solowheel 1500 especially is really expensive. The Firewheel have a huge pri
 ## Residual standard error: 0.4549 on 37 degrees of freedom
 ##   (13 observations deleted due to missingness)
 ## Multiple R-squared:  0.7361,	Adjusted R-squared:  0.7005 
-## F-statistic: 20.64 on 5 and 37 DF,  p-value: 8.475e-10</code></pre></figure>
+## F-statistic: 20.64 on 5 and 37 DF,  p-value: 8.475e-10
+</code></pre>
 
 <p>Without these both outliers, the model is more performant, the R^2^ reaching 0.7.</p>
 
 <p>In the end, the best balanced models found are the Airwheel Q5 340 and the F-Wheel FL D5. These both are quite cheap and really performing. And the F-wheel have a really nice design. That model is definitely the one I recommand.</p>
 
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">comparison.df</span><span class="p">[</span><span class="o">-</span><span class="nf">c</span><span class="p">(</span><span class="m">45</span><span class="p">,</span><span class="w"> </span><span class="m">27</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">11</span><span class="p">,</span><span class="w"> </span><span class="m">7</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">),</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">][</span><span class="nf">c</span><span class="p">(</span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="m">23</span><span class="p">),</span><span class="w"> </span><span class="p">]</span></code></pre></figure>
+<pre><code class="prettyprint ">comparison.df[-c(45, 27), - c(11, 7, 5), with = F][c(12, 23), ]</code></pre>
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text">##       brand  model autonomy speed weight  wh charging.time price
+<pre><code>##       brand  model autonomy speed weight  wh charging.time price
 ## 1: AIRWHEEL Q5 340       65    16   13.5 340            NA   715
 ## 2:  F-WHEEL  FL D5       45    25   15.2 388            NA   751
 ##                                           equipements.intégrés
@@ -297,7 +300,8 @@ The Solowheel 1500 especially is really expensive. The Firewheel have a huge pri
 ## 2: Autonomie. Vitesse. Joli design. % de pente élevé. Prix
 ##                  les.moins wheel climb
 ## 1:            Peu maniable    14    15
-## 2: Poids 12kg, moteur 400W    16    32</code></pre></figure>
+## 2: Poids 12kg, moteur 400W    16    32
+</code></pre>
 
 
         
@@ -434,6 +438,41 @@ The Solowheel 1500 especially is really expensive. The Firewheel have a huge pri
       <div class="archive__item-teaser">
         <img src=
           
+            "https://data-laborer.eu/assets/images/rtnse.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/statistic/RTNSE_blog/" rel="permalink">Messing with T-distributed stochastic neighbor embedding
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Nov 27, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Messing with T-distributed stochastic neighbor embedding
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
             "https://data-laborer.eu/assets/images/flexocpu.png"
           
           alt="">
@@ -490,41 +529,6 @@ The Solowheel 1500 especially is really expensive. The Firewheel have a huge pri
  </p>
 	        
     <p class="archive__item-excerpt" itemprop="description">EARL 2016 review
-</p>
-  </article>
-</div>
-        
-          
-
-
-
-<div class="grid__item">
-  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
-    
-      <div class="archive__item-teaser">
-        <img src=
-          
-            "https://data-laborer.eu/assets/images/logog_oc.png"
-          
-          alt="">
-      </div>
-    
-    <h2 class="archive__item-title" itemprop="headline">
-      
-        <a href="https://data-laborer.eu/hack/Second_ropencorporate_pckg/" rel="permalink">Explore Company Officers of EDF with Ropencorporate
-</a>
-      
-    </h2>
-    
-      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> May 22, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
-
-
-
-
-  12 minute read
- </p>
-	        
-    <p class="archive__item-excerpt" itemprop="description">Exemple of how to use the Ropencorporate package
 </p>
   </article>
 </div>
