@@ -5,7 +5,7 @@
 getwd()
 
 # serve the blog subfolder:
-servr::jekyll(input = "_source", output = "_posts", script = c("Makefile", "build.R"),
+servr::jekyll(input = "_source", output = "_posts", script = c("build.R"),
             command = "jekyll build --destination ../yvescr.github.io/")
 
 # manual hack for embedocpu: get rid of line "<script src="https://data-laborer.eu/assets/js/main.min.js"></script>" 

@@ -8,7 +8,7 @@ local({
   
   # see if we need to use the Jekyll render in knitr
   if (markdown == 'kramdown') {
-    knitr::render_jekyll(highlight = c("prettify"))
+    knitr::render_jekyll(highlight = c("pygments"))
   } else knitr::render_markdown()
   
     # input/output filenames are passed as two additional arguments to Rscript
