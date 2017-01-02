@@ -168,7 +168,24 @@
       
 
       <section class="page__content" itemprop="text">
-        <p>A question was uplifted at the last R coding dojo. What is the location in central London which is the furthest from the subway?</p>
+        <style>
+pre {
+  font-family: 'Source Code Pro', 'Courier New', monospace;
+  font-size: 20px;
+  line-height: 28px;
+  padding: 10px 0 10px 60px;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+  width: 106%;
+  left: -60px;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+</style>
+
+<p>A question was uplifted at the last R coding dojo. What is the location in central London which is the furthest from the subway?</p>
 
 <p>The first bit of code of this question was made at the LondonR coding dojo, here:</p>
 
@@ -192,7 +209,7 @@
 
 <p>Combining both allows me to create a constraint Voronoi diagram in which I could look for the point the furthest from any subway station.</p>
 
-<p><img src="/image/London.gif" alt="london gif " /></p>
+<p><img src="http://data-laborer.eu/assets/images/London.gif" alt="" /></p>
 
 <h1> The code </h1>
 
@@ -244,7 +261,7 @@ plot.no.map.voronoi &lt;- zones.london +
   geom_segment(data = polygon.ext, aes(x = x1, y = y1, xend = x2, yend = y2), colour = &quot;blue&quot;, size=0.25)
 plot.no.map.voronoi</code></pre>
 
-<p><img src="http://data-laborer.euassets/images/figures/source/2015-07-16-Voronoi_station/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" /></p>
+<p><img src="http://data-laborer.eu/assets/images/figures/source/2015-07-16-Voronoi_station/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" /></p>
 
 <p>Now, we have the constraint and the voronoi diagram on all the subways station of the zone 1.</p>
 
@@ -296,7 +313,7 @@ zones.london.vor &lt;- zones.london +
   geom_segment(data = voronoi.part[pip.x == 1 &amp; pip.y == 1, ], aes(x = mx2, y = my2, xend = mx1, yend = my1), colour = &quot;red&quot;, size = 0.25) 
 zones.london.vor</code></pre>
 
-<p><img src="http://data-laborer.euassets/images/figures/source/2015-07-16-Voronoi_station/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
+<p><img src="http://data-laborer.eu/assets/images/figures/source/2015-07-16-Voronoi_station/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
 
 <h3>  Finding the furthest point from the subway </h3>
 
@@ -322,7 +339,7 @@ zones.london.point &lt;- zones.london.vor +
   annotate(&quot;text&quot;, x = min.coordinates$mx2, y = min.coordinates$my2 - 0.003, label = &quot;The albert memorial&quot;)
 zones.london.point</code></pre>
 
-<p><img src="http://data-laborer.euassets/images/figures/source/2015-07-16-Voronoi_station/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
+<p><img src="http://data-laborer.eu/assets/images/figures/source/2015-07-16-Voronoi_station/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
 
 <p>In the end, it appears that the furthest point from the subway in London is near the Albert memorial. If you already find yourself hanging there and thinking that the next subway station was quite far, be rassured, it’s definitely normal. :)</p>
 
@@ -487,41 +504,6 @@ zones.london.point</code></pre>
       <div class="archive__item-teaser">
         <img src=
           
-            "https://data-laborer.eu/assets/images/rtnse.png"
-          
-          alt="">
-      </div>
-    
-    <h2 class="archive__item-title" itemprop="headline">
-      
-        <a href="https://data-laborer.eu/statistic/RTNSE_blog/" rel="permalink">Messing with T-distributed stochastic neighbor embedding
-</a>
-      
-    </h2>
-    
-      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Nov 27, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
-
-
-
-
-  12 minute read
- </p>
-	        
-    <p class="archive__item-excerpt" itemprop="description">Messing with T-distributed stochastic neighbor embedding
-</p>
-  </article>
-</div>
-        
-          
-
-
-
-<div class="grid__item">
-  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
-    
-      <div class="archive__item-teaser">
-        <img src=
-          
             "https://data-laborer.eu/assets/images/flexocpu.png"
           
           alt="">
@@ -578,6 +560,41 @@ zones.london.point</code></pre>
  </p>
 	        
     <p class="archive__item-excerpt" itemprop="description">EARL 2016 review
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://data-laborer.eu/assets/images/logog_oc.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://data-laborer.eu/hack/Second_ropencorporate_pckg/" rel="permalink">Explore Company Officers of EDF with Ropencorporate
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> May 22, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Exemple of how to use the Ropencorporate package
 </p>
   </article>
 </div>
