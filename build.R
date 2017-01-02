@@ -7,7 +7,7 @@ local({
   markdown = servr:::jekyll_config('.', 'markdown', 'kramdown')
   
   # see if we need to use the Jekyll render in knitr
-    knitr::render_jekyll(highlight = c("none"), extra = c("pre", "code"))
+    knitr::render_jekyll(highlight = c("pygments"))
   
     # input/output filenames are passed as two additional arguments to Rscript
     a = commandArgs(TRUE)
