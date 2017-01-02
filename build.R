@@ -1,7 +1,7 @@
 local({
   # fall back on '/' if baseurl is not specified
-  knitr::opts_knit$set(base.url = 'http://data-laborer.eu/')
-  knitr::opts_knit$set(dir.url = 'C:/blog/gen_blog_dev_mm/')
+  knitr::opts_knit$set(base.url = 'http://yvescr.github.io/')
+  knitr::opts_knit$set(dir.url = 'C:/blog/blog_dev_mm/')
   
   # fall back on 'kramdown' if markdown engine is not specified
   markdown = servr:::jekyll_config('.', 'markdown', 'kramdown')
