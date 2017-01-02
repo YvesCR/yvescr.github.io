@@ -232,28 +232,28 @@ The concept is to plot the sum of the distance between the centroid of the clust
 
 <figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">res</span><span class="o">$</span><span class="n">Best.nc</span></code></pre></figure>
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text">##                      KL       CH Hartigan     CCC   Scott     Marriot
-## Number_clusters  6.0000   3.0000   3.0000  4.0000  3.0000           3
-## Value_Index     71.9959 268.1017  92.7407 12.8646 78.2315 17503524926
-##                    TrCovW   TraceW Friedman    Rubin Cindex     DB
-## Number_clusters         4      3.0   6.0000   3.0000 6.0000 3.0000
-## Value_Index     409516202 146960.4  29.9872 -16.9551 0.2689 0.4623
+<figure class="highlight"><pre><code class="language-text" data-lang="text">##                     KL       CH Hartigan     CCC   Scott     Marriot
+## Number_clusters 6.0000   3.0000    3.000  4.0000  3.0000           3
+## Value_Index     9.5985 301.3064   92.187 14.3778 92.8393 21259199239
+##                    TrCovW   TraceW Friedman   Rubin Cindex     DB
+## Number_clusters         6      3.0   3.0000   3.000 5.0000 3.0000
+## Value_Index     711457914 130026.1  52.3932 -19.671 0.3413 0.4069
 ##                 Silhouette   Duda PseudoT2  Beale Ratkowsky     Ball
-## Number_clusters     3.0000 2.0000   2.0000 3.0000    3.0000     3.00
-## Value_Index         0.7029 0.2518  86.1717 0.8365    0.5315 91595.99
+## Number_clusters     3.0000 3.0000   3.0000 3.0000    2.0000     3.00
+## Value_Index         0.7171 0.4678  21.6127 1.0806    0.5376 81110.17
 ##                 PtBiserial Frey McClain   Dunn Hubert SDindex Dindex
-## Number_clusters     3.0000    1  2.0000 2.0000      0  3.0000      0
-## Value_Index         0.8366   NA  0.3239 0.5406      0  0.0175      0
+## Number_clusters     2.0000    1  2.0000 3.0000      0  2.0000      0
+## Value_Index         0.8399   NA  0.3064 0.5299      0  0.0174      0
 ##                   SDbw
 ## Number_clusters 3.0000
-## Value_Index     0.1408</code></pre></figure>
+## Value_Index     0.0585</code></pre></figure>
 
 <p>Most common value:(Without 0)</p>
 
 <figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">summary</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">Best.nc</span><span class="p">[</span><span class="m">1</span><span class="p">,][</span><span class="n">res</span><span class="o">$</span><span class="n">Best.nc</span><span class="p">[</span><span class="m">1</span><span class="p">,]</span><span class="o">!=</span><span class="w"> </span><span class="m">0</span><span class="p">])</span></code></pre></figure>
 
 <figure class="highlight"><pre><code class="language-text" data-lang="text">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   1.000   3.000   3.000   3.208   3.000   6.000</code></pre></figure>
+##   1.000   3.000   3.000   3.125   3.000   6.000</code></pre></figure>
 
 <p>In the end, the median of all these methods is choosed. In this case, 3.</p>
 
