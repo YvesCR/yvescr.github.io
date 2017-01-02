@@ -185,16 +185,18 @@ Otherwise, you still could enjoy the <code class="highlighter-rouge">arimaUI</co
 
 <p>To install the add-in:</p>
 
-<pre><code class="prettyprint ">library(devtools)
-install_github(&quot;YvesCR/arimaUI&quot;)
-library(arimaUI)</code></pre>
+<div class="highlighter-rouge"><pre class="highlight"><code>library(devtools)
+install_github("YvesCR/arimaUI")
+library(arimaUI)
+</code></pre>
+</div>
 
 <p>To use the app, select the timeseries you want to display in your code, then click Addins » arima_addin.</p>
 
 <p>The best way to familiarize yourself with the function is to play with it.
 For exemple by simulating in a blind way the components of your time serie:</p>
 
-<pre><code class="prettyprint "># simulation of the components (p, d, q). 
+<div class="highlighter-rouge"><pre class="highlight"><code># simulation of the components (p, d, q). 
 order.blind &lt;- floor(runif(3, 0, 3))
 
 # For ARIMA models with differencing, the differenced series follows a zero-mean ARMA model
@@ -213,7 +215,9 @@ model = list(
 , ma = ma.blind
 ))
 
-list.res &lt;- arimaUI(sim.ts)</code></pre>
+list.res &lt;- arimaUI(sim.ts)
+</code></pre>
+</div>
 
 <p>If the numbers of the components that you pick in the end is equal to the ones which had been randomly selected, you are truly skilled, congratulations.</p>
 

@@ -234,60 +234,58 @@ Project</p>
 <p>Some exemple of utilisation:
 For more, read the introduction: (10 min here: <a href="https://github.com/Rdatatable/data.table/wiki">data.table intro</a>)</p>
 
-<pre><code class="prettyprint "># conversion to data.table of the diamond data set:
+<div class="highlighter-rouge"><pre class="highlight"><code># conversion to data.table of the diamond data set:
 diamonds.dt &lt;- data.table(diamonds)
 
 # variable of interest: numeric variables to compile
-var.of.interest &lt;- c(&quot;carat&quot;, &quot;depth&quot;, &quot;price&quot;, &quot;x&quot;, &quot;y&quot;, &quot;z&quot;)
+var.of.interest &lt;- c("carat", "depth", "price", "x", "y", "z")
 
 # mean of the variable of interest by cut:
-diamonds.dt[, lapply(.SD, mean), by = cut, .SD = var.of.interest]</code></pre>
+diamonds.dt[, lapply(.SD, mean), by = cut, .SD = var.of.interest]
 
-<pre><code>##          cut     carat    depth    price        x        y        z
+##          cut     carat    depth    price        x        y        z
 ## 1:     Ideal 0.7028370 61.70940 3457.542 5.507451 5.520080 3.401448
 ## 2:   Premium 0.8919549 61.26467 4584.258 5.973887 5.944879 3.647124
 ## 3:      Good 0.8491847 62.36588 3928.864 5.838785 5.850744 3.639507
 ## 4: Very Good 0.8063814 61.81828 3981.760 5.740696 5.770026 3.559801
 ## 5:      Fair 1.0461366 64.04168 4358.758 6.246894 6.182652 3.982770
-</code></pre>
 
-<pre><code class="prettyprint "># median and count of the variable of interest by cut:
+# median and count of the variable of interest by cut:
 median.unique &lt;- function(x) quantile(x, probs = 0.5)
-diamonds.dt[, c(lapply(.SD, median.unique), count = .N), by = cut, .SD = var.of.interest]</code></pre>
+diamonds.dt[, c(lapply(.SD, median.unique), count = .N), by = cut, .SD = var.of.interest]
 
-<pre><code>##          cut carat depth  price     x    y    z     N
+##          cut carat depth  price     x    y    z     N
 ## 1:     Ideal  0.54  61.8 1810.0 5.250 5.26 3.23 21551
 ## 2:   Premium  0.86  61.4 3185.0 6.110 6.06 3.72 13791
 ## 3:      Good  0.82  63.4 3050.5 5.980 5.99 3.70  4906
 ## 4: Very Good  0.71  62.1 2648.0 5.740 5.77 3.56 12082
 ## 5:      Fair  1.00  65.0 3282.0 6.175 6.10 3.97  1610
-</code></pre>
 
-<pre><code class="prettyprint "># count of all the diamonds away from the mean of more than to sd:(number of
+# count of all the diamonds away from the mean of more than to sd:(number of
 # potential outliers).
 away.sd &lt;- function(x) sum(abs(x - mean(x)) &gt; 2 * sd(x))
-diamonds.dt[, c(lapply(.SD, away.sd), count = .N), by = cut, .SD = var.of.interest]</code></pre>
+diamonds.dt[, c(lapply(.SD, away.sd), count = .N), by = cut, .SD = var.of.interest]
 
-<pre><code>##          cut carat depth price   x   y   z     N
+##          cut carat depth price   x   y   z     N
 ## 1:     Ideal  1020   855  1390 711 656 717 21551
 ## 2:   Premium   831   564   942 253 123 240 13791
 ## 3:      Good   226   402   305 159 168 164  4906
 ## 4: Very Good   532   499   762 422 402 249 12082
 ## 5:      Fair    61   115   106  77  76  76  1610
-</code></pre>
 
-<pre><code class="prettyprint "># even better, the percentage formatted table:
-format2 &lt;- function(x) lapply(x, function(x) sprintf(&quot;%1.3f%%&quot;, x))
+# even better, the percentage formatted table:
+format2 &lt;- function(x) lapply(x, function(x) sprintf("%1.3f%%", x))
 away.sd2 &lt;- function(x) format2(sum(abs(x - mean(x)) &gt; 2 * sd(x))/length(x))
-diamonds.dt[, c(lapply(.SD, away.sd2), count = .N), by = cut, .SD = var.of.interest]</code></pre>
+diamonds.dt[, c(lapply(.SD, away.sd2), count = .N), by = cut, .SD = var.of.interest]
 
-<pre><code>##          cut  carat  depth  price      x      y      z     N
+##          cut  carat  depth  price      x      y      z     N
 ## 1:     Ideal 0.047% 0.040% 0.064% 0.033% 0.030% 0.033% 21551
 ## 2:   Premium 0.060% 0.041% 0.068% 0.018% 0.009% 0.017% 13791
 ## 3:      Good 0.046% 0.082% 0.062% 0.032% 0.034% 0.033%  4906
 ## 4: Very Good 0.044% 0.041% 0.063% 0.035% 0.033% 0.021% 12082
 ## 5:      Fair 0.038% 0.071% 0.066% 0.048% 0.047% 0.047%  1610
 </code></pre>
+</div>
 
 <p>This is only a glipse of what could be done with the data.table packages. All I used to do in SQL before, I now do it with data.table.</p>
 
@@ -298,14 +296,16 @@ The ggplot2 package allows, when mastered, to do highly customised graph. Even <
 
 <p>The <a href="http://docs.ggplot2.org/current/">official documentation</a> is well made, but for beginners, <a href="http://zevross.com/blog/2014/08/04/beautiful-plotting-in-r-a-ggplot2-cheatsheet-3/">this excellent blog</a> is more appropriate.</p>
 
-<pre><code class="prettyprint "># exemple, for the diamonds data set:
+<div class="highlighter-rouge"><pre class="highlight"><code># exemple, for the diamonds data set:
 p1 &lt;- ggplot(aes(x = carat, y = price, colour = cut), data = diamonds.dt) +
-  geom_point(colour = &quot;black&quot;, size = 3) +  geom_point()
+  geom_point(colour = "black", size = 3) +  geom_point()
 
 p2 &lt;- ggplot(aes(x = carat, y = price, colour = clarity), data = diamonds.dt) +
-  geom_point(colour = &quot;black&quot;, size = 3) +  geom_point()
+  geom_point(colour = "black", size = 3) +  geom_point()
 
-grid.arrange(p1, p2, nrow = 1, ncol = 2)</code></pre>
+grid.arrange(p1, p2, nrow = 1, ncol = 2)
+</code></pre>
+</div>
 
 <p><img src="http://data-laborer.eu/assets/images/figures/source/2015-08-28-Tips and tricks/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" /></p>
 
@@ -328,26 +328,28 @@ grid.arrange(p1, p2, nrow = 1, ncol = 2)</code></pre>
 
 <p>The following code create the boxplot of the quantitative variables by the qualitative variables.</p>
 
-<pre><code class="prettyprint "># all the factors:
-x.factor &lt;- c(rep(&quot;clarity&quot;, 7), rep(&quot;color&quot;, 7), rep(&quot;cut&quot;, 7))
-y.numeric &lt;- rep(c(&quot;x&quot;, &quot;y&quot;, &quot;z&quot;, &quot;carat&quot;, &quot;depth&quot;, &quot;table&quot;, &quot;price&quot;), 3)
+<div class="highlighter-rouge"><pre class="highlight"><code># all the factors:
+x.factor &lt;- c(rep("clarity", 7), rep("color", 7), rep("cut", 7))
+y.numeric &lt;- rep(c("x", "y", "z", "carat", "depth", "table", "price"), 3)
 
 # function to plot &amp; save:
-ggsave.diamonds &lt;- function(x.f, y.f){ # x.f &lt;- &quot;cut&quot;  ; y.f &lt;- &quot;x&quot;
+ggsave.diamonds &lt;- function(x.f, y.f){ # x.f &lt;- "cut"  ; y.f &lt;- "x"
 
   diamonds2 &lt;- diamonds.dt[y.f != 0, c(x.f, y.f), with = F]
-  setnames(diamonds2, c(x.f, y.f), c(&quot;x.f&quot;, &quot;y.f&quot;))
+  setnames(diamonds2, c(x.f, y.f), c("x.f", "y.f"))
 
  p &lt;- ggplot(aes(x = factor(x.f), y = y.f, fill = x.f), data = diamonds2) +
        geom_boxplot(notch = F) +
        scale_x_discrete(name = x.f) +
        scale_y_continuous(name = y.f, limits = c(0, max(diamonds2$y.f)*1.05))
  
-  ggsave(filename = paste0(&quot;./plot/Boxplot_&quot;, x.f, &quot;_by_&quot;, y.f, &quot;_&quot;, format(Sys.Date(), &quot;%Y%b%d.png&quot;)), plot = p)
+  ggsave(filename = paste0("./plot/Boxplot_", x.f, "_by_", y.f, "_", format(Sys.Date(), "%Y%b%d.png")), plot = p)
 }
 
 # apply the function:
-res &lt;- mapply(ggsave.diamonds, x.factor, y.numeric)</code></pre>
+res &lt;- mapply(ggsave.diamonds, x.factor, y.numeric)
+</code></pre>
+</div>
 
 <h3> Generating code with brew </h3>
 
@@ -363,7 +365,9 @@ res &lt;- mapply(ggsave.diamonds, x.factor, y.numeric)</code></pre>
 
 <p>The syntax is very simple:</p>
 
-<pre><code class="prettyprint ">brew(file=stdin(), output=stdout(), ...)</code></pre>
+<div class="highlighter-rouge"><pre class="highlight"><code>brew(file=stdin(), output=stdout(), ...)
+</code></pre>
+</div>
 
 <p>With stdin() a template file or a connection and 1 the file to generate or a connection.</p>
 

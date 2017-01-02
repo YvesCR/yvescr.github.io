@@ -185,17 +185,19 @@ Consequently, what I represent here is not the reality, it is the snapshot captu
 
 <p>I made here a small map of the density in the UK:</p>
 
-<pre><code class="prettyprint ">  theme_map_uk &lt;- theme(legend.position = &quot;right&quot;
+<div class="highlighter-rouge"><pre class="highlight"><code>  theme_map_uk &lt;- theme(legend.position = "right"
         , axis.ticks = element_blank()
         , axis.text = element_blank()
         , axis.title = element_blank()
-        , panel.margin = unit(c(0, 0, 0, 0), &quot;mm&quot;))
+        , panel.margin = unit(c(0, 0, 0, 0), "mm"))
 
 ggmap(map)  +
   geom_polygon(data = pop2, aes(x = lng, y = lat
         , fill = density.cut, group = name), alpha = 0.8, size = 0.6) +
-        scale_fill_manual(values = brewer.pal(8, &quot;Greens&quot;), name = &quot;Density of\n Population\n(pop/km2)&quot;) +
-  theme_map_uk</code></pre>
+        scale_fill_manual(values = brewer.pal(8, "Greens"), name = "Density of\n Population\n(pop/km2)") +
+  theme_map_uk
+</code></pre>
+</div>
 
 <p><img src="http://data-laborer.eu/assets/images/figures/source/2015-12-28-MapUKpartII/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" /></p>
 
@@ -220,36 +222,43 @@ To counter that effect, I tried a bagging k-means cluster, which didn’t create
 
 <p>With a final number of cluster of 15, it is possible to define new British regions based on the density of population.</p>
 
-<pre><code class="prettyprint "># Ward Hierarchical Clustering. pop4 is a data.table
-d &lt;- dist(pop4[, list(x, y, density2)], method = &quot;euclidean&quot;) # distance matrix
-fit &lt;- hclust(d, method=&quot;ward.D2&quot;)
+<div class="highlighter-rouge"><pre class="highlight"><code># Ward Hierarchical Clustering. pop4 is a data.table
+d &lt;- dist(pop4[, list(x, y, density2)], method = "euclidean") # distance matrix
+fit &lt;- hclust(d, method="ward.D2")
 groups &lt;- cutree(fit, k=15) # cut tree into 15 clusters
 
 #pop4b &lt;- cbind(pop4, predict = bclust.res$cluster)
 pop4b &lt;- cbind(pop4, predict = groups)
-pop4c &lt;- merge(pop2, pop4b[, list(predict, name)], by = &quot;name&quot;, all.x = T)
-pop4c[, density.cut.predict := log(mean(density)), by = &quot;predict&quot;]</code></pre>
+pop4c &lt;- merge(pop2, pop4b[, list(predict, name)], by = "name", all.x = T)
+pop4c[, density.cut.predict := log(mean(density)), by = "predict"]
 
-<pre><code class="prettyprint ">ggmap(map) +
+
+
+
+ggmap(map) +
   geom_polygon(data = pop4c, aes(x = lng, y = lat
       , fill = density.cut.predict, group = name), alpha = 0.8, size = 0.5) +
-    scale_fill_continuous(name = &quot;Density of\n Population\n(log(pop/km2))&quot;) +
-  theme(legend.position = &quot;right&quot;
+    scale_fill_continuous(name = "Density of\n Population\n(log(pop/km2))") +
+  theme(legend.position = "right"
       , axis.ticks = element_blank()
       , axis.text = element_blank()
       , axis.title = element_blank()
-      , panel.margin = unit(c(0, 0, 0, 0), &quot;mm&quot;))</code></pre>
+      , panel.margin = unit(c(0, 0, 0, 0), "mm"))
+</code></pre>
+</div>
 
 <p><img src="http://data-laborer.eu/assets/images/figures/source/2015-12-28-MapUKpartII/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
 
 <p>With a zoom on Greater London:</p>
 
-<pre><code class="prettyprint ">ggmap(map2)  +
+<div class="highlighter-rouge"><pre class="highlight"><code>ggmap(map2)  +
   geom_polygon(data = pop4c, aes(x = lng, y = lat
         , fill = density.cut.predict, group = name), alpha = 0.8, size = 0.5) +
-    scale_fill_continuous(name = &quot;Density of\n Population\n(log(pop/km2))&quot;) +
+    scale_fill_continuous(name = "Density of\n Population\n(log(pop/km2))") +
     coord_map(xlim = c(-1, 1), ylim = c(51, 52)) +
-  theme_map_uk</code></pre>
+  theme_map_uk
+</code></pre>
+</div>
 
 <p><img src="http://data-laborer.eu/assets/images/figures/source/2015-12-28-MapUKpartII/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" /></p>
 

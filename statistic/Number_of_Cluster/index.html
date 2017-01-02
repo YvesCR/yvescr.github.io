@@ -177,16 +177,18 @@ As usual, the answer with R is: there is a package for that.</p>
 <p>First, we generate some fake data:
 Not too much separated, but not too messy. It is a simulation, not real life :)</p>
 
-<pre><code class="prettyprint ">library(ggplot2)
+<div class="highlighter-rouge"><pre class="highlight"><code>library(ggplot2)
 
 sd &lt;- 30
 
 mat = data.frame(x =c(seq(1,10),seq(100,120),seq(10:30)) + rnorm(52, 0, sd), 
                  y = c(seq(1,10),seq(100,120),seq(300,320))+ rnorm(52, 0, sd)
-                 , c = c(rep(&quot;a&quot;, 10), rep(&quot;b&quot;, 21), rep(&quot;c&quot;, 21)))
+                 , c = c(rep("a", 10), rep("b", 21), rep("c", 21)))
 
 ggplot(data = mat, aes(x = x, y = y)) +
-    geom_point( size = 4) </code></pre>
+    geom_point( size = 4) 
+</code></pre>
+</div>
 
 <p><img src="http://data-laborer.eu/assets/images/figures/source/2015-08-18-Number_of_Cluster/unnamed-chunk-1-1.png" alt="plot of chunk unnamed-chunk-1" /></p>
 
@@ -207,7 +209,7 @@ The concept is to plot the sum of the distance between the centroid of the clust
 
 <p>Elbow plot:</p>
 
-<pre><code class="prettyprint ">wss &lt;- (nrow(mat)-1)*sum(apply(mat[, -3],2,var))
+<div class="highlighter-rouge"><pre class="highlight"><code>wss &lt;- (nrow(mat)-1)*sum(apply(mat[, -3],2,var))
   for (i in 2:15) wss[i] &lt;- sum(kmeans(mat[, -3],
                                        centers=i)$withinss)
 
@@ -217,7 +219,9 @@ ggplot(data = wss2, aes(x = x, y = wss))+
     geom_point(size = 4) +
   geom_line() +
   scale_x_continuous(breaks = 1:15) +
-  ggtitle(&quot;Elbow plot&quot;)</code></pre>
+  ggtitle("Elbow plot")
+</code></pre>
+</div>
 
 <p><img src="http://data-laborer.eu/assets/images/figures/source/2015-08-18-Number_of_Cluster/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
 
@@ -225,37 +229,41 @@ ggplot(data = wss2, aes(x = x, y = wss))+
 
 <p>The function NbClust test a consequent set of methods to determine the optimal number of clusters.</p>
 
-<pre><code class="prettyprint ">res &lt;- NbClust(mat[, -3], diss=NULL, distance = &quot;euclidean&quot;, min.nc=2, max.nc=6, 
-             method = &quot;kmeans&quot;, index = &quot;all&quot;)</code></pre>
+<div class="highlighter-rouge"><pre class="highlight"><code>res &lt;- NbClust(mat[, -3], diss=NULL, distance = "euclidean", min.nc=2, max.nc=6, 
+             method = "kmeans", index = "all")
+</code></pre>
+</div>
 
 <p>The different method used (minus the graphical ones) and the number of clusters picked by each:</p>
 
-<pre><code class="prettyprint ">res$Best.nc</code></pre>
+<div class="highlighter-rouge"><pre class="highlight"><code>res$Best.nc
 
-<pre><code>##                      KL       CH Hartigan     CCC   Scott     Marriot
-## Number_clusters  6.0000   3.0000   3.0000  6.0000  3.0000           3
-## Value_Index     11.8252 256.4414  86.4537 13.1551 91.9299 25037444447
-##                     TrCovW   TraceW Friedman    Rubin Cindex     DB
-## Number_clusters          6      3.0   3.0000   3.0000 2.0000 3.0000
-## Value_Index     1331579828 140411.7  40.5647 -16.6403 0.3386 0.4241
-##                 Silhouette   Duda PseudoT2   Beale Ratkowsky     Ball
-## Number_clusters     3.0000 3.0000   3.0000  3.0000    3.0000     3.00
-## Value_Index         0.7049 1.3397  -7.8612 -0.2409    0.5214 88784.78
+##                       KL       CH Hartigan     CCC   Scott     Marriot
+## Number_clusters   3.0000   3.0000   3.0000  4.0000  3.0000           3
+## Value_Index     149.0192 225.3661  64.9168 13.1914 77.2724 20026685783
+##                    TrCovW   TraceW Friedman   Rubin Cindex     DB
+## Number_clusters         4      3.0   3.0000  3.0000 2.0000 2.0000
+## Value_Index     772848467 133283.6  37.3399 -7.9366 0.3183 0.5111
+##                 Silhouette   Duda PseudoT2  Beale Ratkowsky     Ball
+## Number_clusters      2.000 2.0000   2.0000 2.0000    3.0000     3.00
+## Value_Index          0.665 0.2922  70.2388 2.3413    0.5163 95039.14
 ##                 PtBiserial Frey McClain   Dunn Hubert SDindex Dindex
-## Number_clusters     3.0000    1  2.0000 3.0000      0  3.0000      0
-## Value_Index         0.8322   NA  0.3278 0.5037      0  0.0171      0
+## Number_clusters     2.0000    1  2.0000 2.0000      0  2.0000      0
+## Value_Index         0.8207   NA  0.3386 0.4647      0  0.0156      0
 ##                   SDbw
 ## Number_clusters 3.0000
-## Value_Index     0.0675
+## Value_Index     0.1679
 </code></pre>
+</div>
 
 <p>Most common value:(Without 0)</p>
 
-<pre><code class="prettyprint ">summary(res$Best.nc[1,][res$Best.nc[1,]!= 0])</code></pre>
+<div class="highlighter-rouge"><pre class="highlight"><code>summary(res$Best.nc[1,][res$Best.nc[1,]!= 0])
 
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   1.000   3.000   3.000   3.208   3.000   6.000
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   2.000   3.000   2.583   3.000   4.000
 </code></pre>
+</div>
 
 <p>In the end, the median of all these methods is choosed. In this case, 3.</p>
 
@@ -263,10 +271,12 @@ ggplot(data = wss2, aes(x = x, y = wss))+
 
 <p>The plot:</p>
 
-<pre><code class="prettyprint ">mat$res &lt;- res$Best.partition
+<div class="highlighter-rouge"><pre class="highlight"><code>mat$res &lt;- res$Best.partition
 
 ggplot(data = mat, aes(x = x, y = y, colour = factor(res))) +
-    geom_point( size = 4)</code></pre>
+    geom_point( size = 4)
+</code></pre>
+</div>
 
 <p><img src="http://data-laborer.eu/assets/images/figures/source/2015-08-18-Number_of_Cluster/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10" /></p>
 
