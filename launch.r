@@ -14,7 +14,7 @@ servr::jekyll(input = "_source", output = "_posts", script = c("build.R"),
 get_rid_js <- function(x) {
   
   art <- readLines(paste0("../yvescr.github.io/", x, "/index.html"))
-  art <- art[!grepl('<script src="https://data-laborer.eu/assets/js/main.min.js"></script>', art)]
+  art <- art[!grepl('<script src="https://yvescr.github.io/assets/js/main.min.js"></script>', art)]
   cat(art, file=paste0("../yvescr.github.io/", x, "/index.html"), quote = F, fill=T)
 }
 
