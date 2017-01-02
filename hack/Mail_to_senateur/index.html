@@ -182,55 +182,53 @@
 
 <p>The first step is to get all the personal web pages of the senators.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># packages used: 
-library(XML) # install.packages("XML")
-library(plyr) # install.packages("plyr")
-library(stringr) # install.packages("stringr")
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># packages used: 
+</span><span class="n">library</span><span class="p">(</span><span class="n">XML</span><span class="p">)</span><span class="w"> </span><span class="c1"># install.packages("XML")
+</span><span class="n">library</span><span class="p">(</span><span class="n">plyr</span><span class="p">)</span><span class="w"> </span><span class="c1"># install.packages("plyr")
+</span><span class="n">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span><span class="w"> </span><span class="c1"># install.packages("stringr")
+</span><span class="w">
+</span><span class="c1"># url of the main page of the senat website
+</span><span class="n">xml.url.short</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"http://www.senat.fr"</span><span class="w"> 
+</span><span class="n">xml.url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">xml.url.short</span><span class="p">,</span><span class="w"> </span><span class="s2">"/senateurs/senatl.html"</span><span class="p">)</span><span class="w">
 
-# url of the main page of the senat website
-xml.url.short &lt;- "http://www.senat.fr" 
-xml.url &lt;- paste0(xml.url.short, "/senateurs/senatl.html")
+</span><span class="c1">### get all the links of the senator website:
+</span><span class="n">senateur.raw.link</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">getHTMLLinks</span><span class="p">(</span><span class="n">xml.url</span><span class="p">)</span><span class="w">
 
-### get all the links of the senator website:
-senateur.raw.link &lt;- getHTMLLinks(xml.url)
+</span><span class="c1">## cleaning the set of link:
+</span><span class="w">  </span><span class="c1"># we keep only the ones beginning by /senateur/:
+</span><span class="n">senateur.link</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">unlist</span><span class="p">(</span><span class="n">senateur.raw.link</span><span class="p">)[</span><span class="n">substr</span><span class="p">(</span><span class="n">unlist</span><span class="p">(</span><span class="n">senateur.raw.link</span><span class="p">),</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"/senateur/"</span><span class="p">]</span><span class="w">
+  </span><span class="c1"># we add the full path:
+</span><span class="n">senateur.full.link</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">xml.url.short</span><span class="p">,</span><span class="w"> </span><span class="n">senateur.link</span><span class="p">)</span><span class="w">
 
-## cleaning the set of link:
-  # we keep only the ones beginning by /senateur/:
-senateur.link &lt;- unlist(senateur.raw.link)[substr(unlist(senateur.raw.link), 1, 10) == "/senateur/"]
-  # we add the full path:
-senateur.full.link &lt;- paste0(xml.url.short, senateur.link)
+</span><span class="c1">### now, getting every mail address from these link:
+</span><span class="w">  </span><span class="c1"># function to get: name, surname, mail address, group, profession, circonscription
+</span><span class="w">      </span><span class="c1"># based on the link
+</span><span class="n">senateur.infos.primaire</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">senateur.full.link</span><span class="w">
+                </span><span class="p">,</span><span class="w"> </span><span class="n">mail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">full.name.surname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">stringsAsFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">)</span><span class="w">
 
-### now, getting every mail address from these link:
-  # function to get: name, surname, mail address, group, profession, circonscription
-      # based on the link
-senateur.infos.primaire &lt;- data.frame(link = senateur.full.link
-                , mail = "", full.name.surname = "", group = "", stringsAsFactors = F)
+</span><span class="c1"># timer
+</span><span class="n">ptm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">proc.time</span><span class="p">()</span><span class="w">
 
-# timer
-ptm &lt;- proc.time()
-
-for (i in 1:length(senateur.full.link)) { # i &lt;- 1
+</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="nf">length</span><span class="p">(</span><span class="n">senateur.full.link</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1"># i &lt;- 1
+</span><span class="w">  
+  </span><span class="c1"># mail:
+</span><span class="w">  </span><span class="n">links</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">unlist</span><span class="p">(</span><span class="n">getHTMLLinks</span><span class="p">(</span><span class="n">senateur.full.link</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">externalOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">))</span><span class="w">
+  </span><span class="n">mails</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">links</span><span class="p">[</span><span class="n">substr</span><span class="p">(</span><span class="n">links</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">6</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"mailto"</span><span class="p">]</span><span class="w">
+  </span><span class="n">mail</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">substr</span><span class="p">(</span><span class="n">mails</span><span class="p">[</span><span class="o">!</span><span class="n">substr</span><span class="p">(</span><span class="n">mails</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">20</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"mailto:notices-senat"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mailto:?subject=&amp;bod"</span><span class="p">)],</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">)</span><span class="w">
+  </span><span class="n">senateur.infos.primaire</span><span class="o">$</span><span class="n">mail</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ifelse</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">mail</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">mail</span><span class="p">[</span><span class="nf">length</span><span class="p">(</span><span class="n">mail</span><span class="p">)],</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w">
   
-  # mail:
-  links &lt;- unlist(getHTMLLinks(senateur.full.link[i], externalOnly = F))
-  mails &lt;- links[substr(links, 1, 6) == "mailto"]
-  mail &lt;- substr(mails[!substr(mails, 1, 20) %in% c("mailto:notices-senat", "mailto:?subject=&amp;bod")], 8, 200)
-  senateur.infos.primaire$mail[i] &lt;- ifelse(length(mail) != 0, mail[length(mail)], "")
-  
-  # name and surname:
-senateur.infos.primaire$full.name.surname[i] &lt;- substr(mails[substr(mails, 1, 20) %in% c("mailto:notices-senat")], 66, 200)
-}
+  </span><span class="c1"># name and surname:
+</span><span class="n">senateur.infos.primaire</span><span class="o">$</span><span class="n">full.name.surname</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">substr</span><span class="p">(</span><span class="n">mails</span><span class="p">[</span><span class="n">substr</span><span class="p">(</span><span class="n">mails</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">20</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"mailto:notices-senat"</span><span class="p">)],</span><span class="w"> </span><span class="m">66</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
 
-print(ptm0 &lt;- ptm - proc.time())
+</span><span class="n">print</span><span class="p">(</span><span class="n">ptm0</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ptm</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">proc.time</span><span class="p">())</span><span class="w">
 
-## convert to correct encoding to deal with the special characters
-senateur.infos.primaire$full.name.surname &lt;- iconv(senateur.infos.primaire$full.name.surname, from = "UTF-8", to = "LATIN2")
+</span><span class="c1">## convert to correct encoding to deal with the special characters
+</span><span class="n">senateur.infos.primaire</span><span class="o">$</span><span class="n">full.name.surname</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">iconv</span><span class="p">(</span><span class="n">senateur.infos.primaire</span><span class="o">$</span><span class="n">full.name.surname</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"UTF-8"</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"LATIN2"</span><span class="p">)</span><span class="w">
 
-# sex definition:
-senateur.infos.primaire$sexe &lt;- ifelse(substr(senateur.infos.primaire$full.name.surname, 1, 5) == "de la", "F", " ")
-senateur.infos.primaire$sexe &lt;- ifelse(substr(senateur.infos.primaire$full.name.surname, 1, 4) == "du S", "M", senateur.infos.primaire$sexe)
-</code></pre>
-</div>
+</span><span class="c1"># sex definition:
+</span><span class="n">senateur.infos.primaire</span><span class="o">$</span><span class="n">sexe</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ifelse</span><span class="p">(</span><span class="n">substr</span><span class="p">(</span><span class="n">senateur.infos.primaire</span><span class="o">$</span><span class="n">full.name.surname</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"de la"</span><span class="p">,</span><span class="w"> </span><span class="s2">"F"</span><span class="p">,</span><span class="w"> </span><span class="s2">" "</span><span class="p">)</span><span class="w">
+</span><span class="n">senateur.infos.primaire</span><span class="o">$</span><span class="n">sexe</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ifelse</span><span class="p">(</span><span class="n">substr</span><span class="p">(</span><span class="n">senateur.infos.primaire</span><span class="o">$</span><span class="n">full.name.surname</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"du S"</span><span class="p">,</span><span class="w"> </span><span class="s2">"M"</span><span class="p">,</span><span class="w"> </span><span class="n">senateur.infos.primaire</span><span class="o">$</span><span class="n">sexe</span><span class="p">)</span></code></pre></figure>
 
 <p>In the end, we get a file with all the emails of the French senators and the associated details.</p>
 
@@ -242,33 +240,31 @@ senateur.infos.primaire$sexe &lt;- ifelse(substr(senateur.infos.primaire$full.na
 
 <p>To facilitate the debugging, the mail is written in HTML then the <code class="highlighter-rouge">brew</code> package is used to replace the names, and personalize the message looking at the group. It allows as well to keep the log of the mail.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>## rJava is needed first
-library(mailR)  # install.packages("mailR", dep = T)  
-library(brew)  # install.packages("brew")
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1">## rJava is needed first
+</span><span class="n">library</span><span class="p">(</span><span class="n">mailR</span><span class="p">)</span><span class="w">  </span><span class="c1"># install.packages("mailR", dep = T)  
+</span><span class="n">library</span><span class="p">(</span><span class="n">brew</span><span class="p">)</span><span class="w">  </span><span class="c1"># install.packages("brew")
 # install.packages("rJava", repos = "http://cran.univ-paris1.fr/") #  options(java.home="C:\\Program Files\\Java\\jre1.8.0_45\\") # library(rJava)
+</span><span class="w">
+</span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="nf">dim</span><span class="p">(</span><span class="n">senateur.infos.primaire</span><span class="p">)[</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">#i &lt;- 1
+</span><span class="w">
+</span><span class="c1"># create the log file
+</span><span class="n">brew</span><span class="p">(</span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="s2">"/Mail Template/template mail.html"</span><span class="p">),</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="s2">"/Log/Mail_"</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="s2">".html"</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">
 
-for(i in 1:dim(senateur.infos.primaire)[1]) {  #i &lt;- 1
+</span><span class="c1"># the body of the mail
+</span><span class="n">body</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">scan</span><span class="p">(</span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="s2">"/Log/Mail_"</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="s2">".html"</span><span class="p">),</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"raw"</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"|"</span><span class="p">),</span><span class="w"> </span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w">
 
-# create the log file
-brew(file = paste0(path, "/Mail Template/template mail.html"), output = paste0(path, "/Log/Mail_", i, ".html") )
+</span><span class="n">from</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"my@email.com"</span><span class="w">
+</span><span class="n">to</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">senateur.infos.primaire</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="s2">"mail"</span><span class="p">]</span><span class="w">
 
-# the body of the mail
-body &lt;- paste0(scan(file = paste0(path, "/Log/Mail_", i, ".html"), what = "raw", sep = "|"), collapse = "")
-
-from &lt;- "my@email.com"
-to &lt;- senateur.infos.primaire[i, "mail"]
-
-tt &lt;- send.mail(from = from, to = to
-          , subject = "Loi renseignement"
-          , body = body
-          , html = TRUE
-          , smtp = list(host.name = "smtp.gmail.com", port = 465, user.name = "my username"
-                      , passwd = "my password", ssl = TRUE)
-          , authenticate = TRUE
-          , SEND = TRUE)
-}
-</code></pre>
-</div>
+</span><span class="n">tt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">send.mail</span><span class="p">(</span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">to</span><span class="w">
+          </span><span class="p">,</span><span class="w"> </span><span class="n">subject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Loi renseignement"</span><span class="w">
+          </span><span class="p">,</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">body</span><span class="w">
+          </span><span class="p">,</span><span class="w"> </span><span class="n">html</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="w">
+          </span><span class="p">,</span><span class="w"> </span><span class="n">smtp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">host.name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"smtp.gmail.com"</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">465</span><span class="p">,</span><span class="w"> </span><span class="n">user.name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"my username"</span><span class="w">
+                      </span><span class="p">,</span><span class="w"> </span><span class="n">passwd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"my password"</span><span class="p">,</span><span class="w"> </span><span class="n">ssl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+          </span><span class="p">,</span><span class="w"> </span><span class="n">authenticate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="w">
+          </span><span class="p">,</span><span class="w"> </span><span class="n">SEND</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
 
 <p>The loop for sending the email could take a few minutes.</p>
 
@@ -276,24 +272,22 @@ tt &lt;- send.mail(from = from, to = to
 
 <p>The file allows an analysis of the parity.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># plot
-ggplot(senateur.infos, aes(x = group, fill= sexe)) + geom_bar() +
-  scale_x_discrete(name = "Group") +
-  scale_y_continuous(name = "Number of senator\n") +
-  scale_fill_discrete(name = "Sex") +
-  ggtitle("Repartition of sex among the senators by group\n") +
-  theme(axis.text.x = element_text(colour = "blue", size = 10)
-        , axis.text.y = element_text(colour = "blue", size = 13)
-        , panel.background = element_rect(fill = "white")
-        , panel.grid.major.y = element_line(colour = "darkgrey", size = 1)
-        , panel.grid.minor.y = element_line(colour = "grey", size = 0.5)
-        , panel.grid.major.x = element_blank()
-        , plot.title = element_text(size = 20, colour = "darkblue")
-        , legend.title = element_text(size = 15, colour = "darkcyan")
-        , legend.text = element_text(size = 13, colour = "blue")
-        , axis.title = element_text(size = 15, colour = "darkcyan", face = "bold"))
-</code></pre>
-</div>
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># plot
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">senateur.infos</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="w"> </span><span class="n">sexe</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_bar</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_x_discrete</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Group"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Number of senator\n"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_fill_discrete</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Sex"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Repartition of sex among the senators by group\n"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="n">axis.text.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"blue"</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">axis.text.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"blue"</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">13</span><span class="p">)</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">panel.background</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_rect</span><span class="p">(</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"white"</span><span class="p">)</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">panel.grid.major.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_line</span><span class="p">(</span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"darkgrey"</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">panel.grid.minor.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_line</span><span class="p">(</span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"grey"</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">panel.grid.major.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">()</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"darkblue"</span><span class="p">)</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">legend.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"darkcyan"</span><span class="p">)</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">legend.text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">13</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"blue"</span><span class="p">)</span><span class="w">
+        </span><span class="p">,</span><span class="w"> </span><span class="n">axis.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"darkcyan"</span><span class="p">,</span><span class="w"> </span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"bold"</span><span class="p">))</span></code></pre></figure>
 
 <p><img src="http://data-laborer.eu/assets/images/figures/source/2015-07-15-Mail_to_senateur/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" /></p>
 
