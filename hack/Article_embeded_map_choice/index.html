@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Cartographie des activités francaises par département(French article) - Data laborer</title>
+
+
+
+
+<meta name="description" content="An API to map french activity by department">
+
+
+
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="Data laborer">
+<meta property="og:title" content="Cartographie des activités francaises par département(French article)">
+
+
+  <link rel="canonical" href="https://yvescr.github.io/hack/Article_embeded_map_choice/">
+  <meta property="og:url" content="https://yvescr.github.io/hack/Article_embeded_map_choice/">
+
+
+
+  <meta property="og:description" content="An API to map french activity by department">
+
+
+
+  <meta name="twitter:site" content="@SwiftAMHE">
+  <meta name="twitter:title" content="Cartographie des activités francaises par département(French article)">
+  <meta name="twitter:description" content="An API to map french activity by department">
+  <meta name="twitter:url" content="https://yvescr.github.io/hack/Article_embeded_map_choice/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+  
+
+  
+
+
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2017-02-23T00:00:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Yves Crutain",
+      "url" : "https://yvescr.github.io",
+      "sameAs" : ["https://twitter.com/swiftamhe","https://www.linkedin.com/in/yves-crutain-0b430324"]
+    }
+  </script>
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://yvescr.github.io/feed.xml" type="application/atom+xml" rel="alternate" title="Data laborer Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://yvescr.github.io/assets/css/main.css">
+
+<meta http-equiv="cleartype" content="on">
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+    <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <button><div class="navicon"></div></button>
+        <ul class="visible-links">
+          <li class="masthead__menu-item masthead__menu-item--lg"><a href="https://yvescr.github.io/">Data laborer</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://yvescr.github.io/portfolio/">List View</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://yvescr.github.io/categories/">Categories</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://yvescr.github.io/about/index.html">About</a></li>
+          
+        </ul>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    
+
+
+
+<div id="main" role="main">
+  
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Cartographie des activités francaises par département(French article)">
+    <meta itemprop="description" content="An API to map french activity by department">
+    <meta itemprop="datePublished" content="February 23, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Cartographie des activités francaises par département(French article)
+</h1>
+          
+            <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  38 minute read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        <p>Ce post de blog est, pour changer, en français. La raison vient du sujet traité : les activités françaises.</p>
+
+<p>Le but a long terme est de créer une segmentation du territoire qui puisse être viable pour une utilisation professionnelle, par exemple dans un département CRM.</p>
+
+<p>Cet article est un petit hack dans ce projet : une API pour créer une cartographie des activités de la France par départements.</p>
+
+<!--html_preserve-->
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<!--/html_preserve-->
+<!--html_preserve-->
+<script src="https://cdn.opencpu.org/opencpu-0.4.js"></script>
+<!--/html_preserve-->
+<!--html_preserve-->
+<script>ocpu.seturl('https://yvescr.ocpu.io/AppMapActivity/R')</script>
+<!--/html_preserve-->
+
+<h1 id="sirene">Sirene</h1>
+
+<p>La base Sirene des entreprises françaises a été rendue public en janvier 2017.</p>
+
+<p>Le premier fichier sorti compte 10 millions de lignes, soit environ 9,4 millions  d’entreprises uniques (et des updates).</p>
+
+<p>Pour manier ces données, il est idéal de créer une base de données.</p>
+
+<p>Les données peuvent être téléchargées ici :
+<a href="https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/">https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/</a></p>
+
+<h1 id="effectifs-des-codes-activité">Effectifs des codes activité</h1>
+
+<p>Une analyse possible est de regarder le compte des entreprises par département par code apen700.</p>
+
+<p>Première constatation, une seule activité, “Location de terrains et d’autres biens immobiliers” représente 15 % des entreprises.</p>
+
+<p><img src="http://yvescr.github.io/assets/images/figures/source/2017-02-23-Article_embeded_map_choice/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" /></p>
+
+<p>Il y a des secteurs d’activité de toutes tailles présentes dans le fichier. Cela pose un problème pour une éventuelle classification des activités. En effet, il est délicat de comparer les locations de terrains, qui compte 1.5 million d’entreprises et la vinification, qui en compte 1 500.</p>
+
+<p>Pour se rendre compte de la localisation des secteurs d’activités en France, j’ai crée une micro app qui permet de générer la carte des activités par départements.</p>
+
+<h1 id="cartographie-des-activités-par-département">Cartographie des activités par département</h1>
+
+<p>Comment ça marche?</p>
+
+<p>Utilisez le bouton déroulant pour sélectionner un type d’activité puis appuyez sur le boutton <strong>GO</strong>.</p>
+
+<p>La carte du nombre d’activité par département devrait s’afficher.</p>
+
+<!--html_preserve-->
+<p><select type="integer" class="form-control" id="myid" style="width: 90%;"><option value="1">Accueil de jeunes enfants</option><option value="2">Accueil ou accompagnement sans hébergement d'adultes handicapés ou de personnes âgées</option><option value="3">Action sociale sans hébergement n.c.a.</option><option value="4">Activité des économistes de la construction</option><option value="5">Activité des géomètres</option><option value="6">Activité des médecins généralistes</option><option value="7">Activités chirurgicales</option><option value="8">Activités combinées de soutien lié aux bâtiments</option><option value="9">Activités comptables</option><option value="10">Activités d'architecture</option><option value="11">Activités d'enquête</option><option value="12">Activités de banque centrale</option><option value="13">Activités de centres d'appels</option><option value="14">Activités de clubs de sports</option><option value="15">Activités de conditionnement</option><option value="16">Activités de poste dans le cadre d'une obligation de service universel</option><option value="17">Activités de pré-presse</option><option value="18">Activités de radiodiagnostic et de radiothérapie</option><option value="19">Activités de santé humaine non classées ailleurs</option><option value="20">Activités de sécurité privée</option><option value="21">Activités de soutien à l'enseignement</option><option value="22">Activités de soutien à l'extraction d'hydrocarbures</option><option value="23">Activités de soutien à la production animale</option><option value="24">Activités de soutien au spectacle vivant</option><option value="25">Activités de soutien aux autres industries extractives</option><option value="26">Activités de soutien aux cultures</option><option value="27">Activités des agences de placement de main-d'œuvre</option><option value="28">Activités des agences de presse</option><option value="29">Activités des agences de publicité</option><option value="30">Activités des agences de recouvrement de factures et des sociétés d'information financière sur la clientèle</option><option value="31">Activités des agences de travail temporaire</option><option value="32">Activités des agences de voyage</option><option value="33">Activités des agents et courtiers d'assurances</option><option value="34">Activités des centres de culture physique</option><option value="35">Activités des infirmiers et des sages-femmes</option><option value="36">Activités des marchands de biens immobiliers</option><option value="37">Activités des organisations et organismes extraterritoriaux</option><option value="38">Activités des organisations patronales et consulaires</option><option value="39">Activités des organisations politiques</option><option value="40">Activités des organisations professionnelles</option><option value="41">Activités des organisations religieuses</option><option value="42">Activités des parcs d'attractions et parcs à thèmes</option><option value="43">Activités des professionnels de la rééducation, de l'appareillage et des pédicures-podologues</option><option value="44">Activités des sièges sociaux</option><option value="45">Activités des sociétés holding</option><option value="46">Activités des syndicats de salariés</option><option value="47">Activités des voyagistes</option><option value="48">Activités hospitalières</option><option value="49">Activités juridiques</option><option value="50">Activités liées aux systèmes de sécurité</option><option value="51">Activités photographiques</option><option value="52">Activités spécialisées de design</option><option value="53">Activités spécialisées, scientifiques et techniques diverses</option><option value="54">Activités vétérinaires</option><option value="55">Administration d'immeubles et autres biens immobiliers</option><option value="56">Administration de marchés financiers</option><option value="57">Administration publique (tutelle) de la santé, de la formation, de la culture et des services sociaux, autre que sécurité sociale</option><option value="58">Administration publique (tutelle) des activités économiques</option><option value="59">Administration publique générale</option><option value="60">Affaires étrangères</option><option value="61">Affrètement et organisation des transports</option><option value="62">Agencement de lieux de vente</option><option value="63">Agences immobilières</option><option value="64">Aide à domicile</option><option value="65">Aide par le travail</option><option value="66">Analyses, essais et inspections techniques</option><option value="67">Apprêt et tannage des cuirs ; préparation et teinture des fourrures</option><option value="68">Aquaculture en eau douce</option><option value="69">Aquaculture en mer</option><option value="70">Arts du spectacle vivant</option><option value="71">Assurance vie</option><option value="72">Autre accueil ou accompagnement sans hébergement d'enfants et d'adolescents</option><option value="73">Autre création artistique</option><option value="74">Autre distribution de crédit</option><option value="75">Autre imprimerie (labeur)</option><option value="76">Autre mise à disposition de ressources humaines</option><option value="77">Autre transformation et conservation de légumes</option><option value="78">Autres activités auxiliaires d'assurance et de caisses de retraite</option><option value="79">Autres activités auxiliaires de services financiers, hors assurance et caisses de retraite, n.c.a.</option><option value="80">Autres activités d'édition</option><option value="81">Autres activités de nettoyage des bâtiments et nettoyage industriel</option><option value="82">Autres activités de nettoyage n.c.a.</option><option value="83">Autres activités de poste et de courrier</option><option value="84">Autres activités de soutien aux entreprises n.c.a.</option><option value="85">Autres activités de télécommunication</option><option value="86">Autres activités des médecins spécialistes</option><option value="87">Autres activités des services financiers, hors assurance et caisses de retraite, n.c.a.</option><option value="88">Autres activités du travail des grains</option><option value="89">Autres activités extractives n.c.a.</option><option value="90">Autres activités informatiques</option><option value="91">Autres activités liées au sport</option><option value="92">Autres activités manufacturières n.c.a.</option><option value="93">Autres activités récréatives et de loisirs</option><option value="94">Autres assurances</option><option value="95">Autres commerces de détail alimentaires en magasin spécialisé</option><option value="96">Autres commerces de détail en magasin non spécialisé</option><option value="97">Autres commerces de détail spécialisés divers</option><option value="98">Autres commerces de détail sur éventaires et marchés</option><option value="99">Autres cultures non permanentes</option><option value="100">Autres cultures permanentes</option><option value="101">Autres enseignements</option><option value="102">Autres hébergements</option><option value="103">Autres intermédiaires du commerce en combustibles, métaux, minéraux et produits chimiques</option><option value="104">Autres intermédiaires du commerce en denrées, boissons et tabac</option><option value="105">Autres intermédiaires du commerce en produits divers</option><option value="106">Autres intermédiations monétaires</option><option value="107">Autres organisations fonctionnant par adhésion volontaire</option><option value="108">Autres services d'information n.c.a.</option><option value="109">Autres services de réservation et activités connexes</option><option value="110">Autres services de restauration n.c.a.</option><option value="111">Autres services personnels n.c.a.</option><option value="112">Autres transports routiers de voyageurs</option><option value="113">Autres travaux d'installation n.c.a.</option><option value="114">Autres travaux de finition</option><option value="115">Autres travaux spécialisés de construction</option><option value="116">Blanchisserie-teinturerie de détail</option><option value="117">Blanchisserie-teinturerie de gros</option><option value="118">Boulangerie et boulangerie-pâtisserie</option><option value="119">Cafétérias et autres libres-services</option><option value="120">Caisses de retraite</option><option value="121">Captage, traitement et distribution d'eau</option><option value="122">Centrales d'achat alimentaires</option><option value="123">Centrales d'achat de carburant</option><option value="124">Centrales d'achat non alimentaires</option><option value="125">Centres de collecte et banques d'organes</option><option value="126">Charcuterie</option><option value="127">Chasse, piégeage et services annexes</option><option value="128">Coiffure</option><option value="129">Collecte des déchets dangereux</option><option value="130">Collecte des déchets non dangereux</option><option value="131">Collecte et traitement des eaux usées</option><option value="132">Commerce d'alimentation générale</option><option value="133">Commerce d'autres véhicules automobiles</option><option value="134">Commerce d'électricité</option><option value="135">Commerce de combustibles gazeux par conduites</option><option value="136">Commerce de détail alimentaire sur éventaires et marchés</option><option value="137">Commerce de détail d'appareils électroménagers en magasin spécialisé</option><option value="138">Commerce de détail d'articles d'horlogerie et de bijouterie en magasin spécialisé</option><option value="139">Commerce de détail d'articles de sport en magasin spécialisé</option><option value="140">Commerce de détail d'articles médicaux et orthopédiques en magasin spécialisé</option><option value="141">Commerce de détail d'autres équipements du foyer</option><option value="142">Commerce de détail d'enregistrements musicaux et vidéo en magasin spécialisé</option><option value="143">Commerce de détail d'équipements automobiles</option><option value="144">Commerce de détail d'habillement en magasin spécialisé</option><option value="145">Commerce de détail d'ordinateurs, d'unités périphériques et de logiciels en magasin spécialisé</option><option value="146">Commerce de détail de biens d'occasion en magasin</option><option value="147">Commerce de détail de boissons en magasin spécialisé</option><option value="148">Commerce de détail de carburants en magasin spécialisé</option><option value="149">Commerce de détail de fleurs, plantes, graines, engrais, animaux de compagnie et aliments pour ces animaux en magasin spécialisé</option><option value="150">Commerce de détail de fruits et légumes en magasin spécialisé</option><option value="151">Commerce de détail de jeux et jouets en magasin spécialisé</option><option value="152">Commerce de détail de journaux et papeterie en magasin spécialisé</option><option value="153">Commerce de détail de la chaussure</option><option value="154">Commerce de détail de livres en magasin spécialisé</option><option value="155">Commerce de détail de maroquinerie et d'articles de voyage</option><option value="156">Commerce de détail de matériels audio et vidéo en magasin spécialisé</option><option value="157">Commerce de détail de matériels de télécommunication en magasin spécialisé</option><option value="158">Commerce de détail de meubles</option><option value="159">Commerce de détail de pain, pâtisserie et confiserie en magasin spécialisé</option><option value="160">Commerce de détail de parfumerie et de produits de beauté en magasin spécialisé</option><option value="161">Commerce de détail de poissons, crustacés et mollusques en magasin spécialisé</option><option value="162">Commerce de détail de produits à base de tabac en magasin spécialisé</option><option value="163">Commerce de détail de produits pharmaceutiques en magasin spécialisé</option><option value="164">Commerce de détail de produits surgelés</option><option value="165">Commerce de détail de quincaillerie, peintures et verres en grandes surfaces (400 m² et plus)</option><option value="166">Commerce de détail de quincaillerie, peintures et verres en petites surfaces (moins de 400 m²)</option><option value="167">Commerce de détail de tapis, moquettes et revêtements de murs et de sols en magasin spécialisé</option><option value="168">Commerce de détail de textiles en magasin spécialisé</option><option value="169">Commerce de détail de textiles, d'habillement et de chaussures sur éventaires et marchés</option><option value="170">Commerce de détail de viandes et de produits à base de viande en magasin spécialisé</option><option value="171">Commerce de gros (commerce interentreprises) alimentaire non spécialisé</option><option value="172">Commerce de gros (commerce interentreprises) alimentaire spécialisé divers</option><option value="173">Commerce de gros (commerce interentreprises) d'animaux vivants</option><option value="174">Commerce de gros (commerce interentreprises) d'appareils électroménagers</option><option value="175">Commerce de gros (commerce interentreprises) d'appareils sanitaires et de produits de décoration</option><option value="176">Commerce de gros (commerce interentreprises) d'articles d'horlogerie et de bijouterie</option><option value="177">Commerce de gros (commerce interentreprises) d'autres biens domestiques</option><option value="178">Commerce de gros (commerce interentreprises) d'autres machines et équipements de bureau</option><option value="179">Commerce de gros (commerce interentreprises) d'autres produits intermédiaires</option><option value="180">Commerce de gros (commerce interentreprises) d'habillement et de chaussures</option><option value="181">Commerce de gros (commerce interentreprises) d'ordinateurs, d'équipements informatiques périphériques et de logiciels</option><option value="182">Commerce de gros (commerce interentreprises) de bois et de matériaux de construction</option><option value="183">Commerce de gros (commerce interentreprises) de boissons</option><option value="184">Commerce de gros (commerce interentreprises) de café, thé, cacao et épices</option><option value="185">Commerce de gros (commerce interentreprises) de céréales, de tabac non manufacturé, de semences et d'aliments pour le bétail</option><option value="186">Commerce de gros (commerce interentreprises) de combustibles et de produits annexes</option><option value="187">Commerce de gros (commerce interentreprises) de composants et d'équipements électroniques et de télécommunication</option><option value="188">Commerce de gros (commerce interentreprises) de cuirs et peaux</option><option value="189">Commerce de gros (commerce interentreprises) de déchets et débris</option><option value="190">Commerce de gros (commerce interentreprises) de fleurs et plantes</option><option value="191">Commerce de gros (commerce interentreprises) de fournitures et équipements divers pour le commerce et les services</option><option value="192">Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers</option><option value="193">Commerce de gros (commerce interentreprises) de fournitures pour la plomberie et le chauffage</option><option value="194">Commerce de gros (commerce interentreprises) de fruits et légumes</option><option value="195">Commerce de gros (commerce interentreprises) de machines-outils</option><option value="196">Commerce de gros (commerce interentreprises) de machines pour l'extraction, la construction et le génie civil</option><option value="197">Commerce de gros (commerce interentreprises) de machines pour l'industrie textile et l'habillement</option><option value="198">Commerce de gros (commerce interentreprises) de matériel agricole</option><option value="199">Commerce de gros (commerce interentreprises) de matériel électrique</option><option value="200">Commerce de gros (commerce interentreprises) de meubles, de tapis et d'appareils d'éclairage</option><option value="201">Commerce de gros (commerce interentreprises) de minerais et métaux</option><option value="202">Commerce de gros (commerce interentreprises) de mobilier de bureau</option><option value="203">Commerce de gros (commerce interentreprises) de parfumerie et de produits de beauté</option><option value="204">Commerce de gros (commerce interentreprises) de poissons, crustacés et mollusques</option><option value="205">Commerce de gros (commerce interentreprises) de produits à base de tabac</option><option value="206">Commerce de gros (commerce interentreprises) de produits à base de viande</option><option value="207">Commerce de gros (commerce interentreprises) de produits chimiques</option><option value="208">Commerce de gros (commerce interentreprises) de produits laitiers, œufs, huiles et matières grasses comestibles</option><option value="209">Commerce de gros (commerce interentreprises) de produits pharmaceutiques</option><option value="210">Commerce de gros (commerce interentreprises) de produits surgelés</option><option value="211">Commerce de gros (commerce interentreprises) de quincaillerie</option><option value="212">Commerce de gros (commerce interentreprises) de sucre, chocolat et confiserie</option><option value="213">Commerce de gros (commerce interentreprises) de textiles</option><option value="214">Commerce de gros (commerce interentreprises) de vaisselle, verrerie et produits d'entretien</option><option value="215">Commerce de gros (commerce interentreprises) de viandes de boucherie</option><option value="216">Commerce de gros (commerce interentreprises) de volailles et gibier</option><option value="217">Commerce de gros (commerce interentreprises) non spécialisé</option><option value="218">Commerce de gros d'équipements automobiles</option><option value="219">Commerce de voitures et de véhicules automobiles légers</option><option value="220">Commerce et réparation de motocycles</option><option value="221">Commerces de détail d'optique</option><option value="222">Commerces de détail de charbons et combustibles</option><option value="223">Conception d'ensemble et assemblage sur site industriel d'équipements de contrôle des processus industriels</option><option value="224">Conseil en relations publiques et communication</option><option value="225">Conseil en systèmes et logiciels informatiques</option><option value="226">Conseil pour les affaires et autres conseils de gestion</option><option value="227">Construction aéronautique et spatiale</option><option value="228">Construction d'autres bâtiments</option><option value="229">Construction d'autres ouvrages de génie civil n.c.a.</option><option value="230">Construction d'ouvrages d'art</option><option value="231">Construction d'ouvrages maritimes et fluviaux</option><option value="232">Construction de bateaux de plaisance</option><option value="233">Construction de locomotives et d'autre matériel ferroviaire roulant</option><option value="234">Construction de maisons individuelles</option><option value="235">Construction de navires et de structures flottantes</option><option value="236">Construction de réseaux électriques et de télécommunications</option><option value="237">Construction de réseaux pour fluides</option><option value="238">Construction de routes et autoroutes</option><option value="239">Construction de véhicules automobiles</option><option value="240">Construction de voies ferrées de surface et souterraines</option><option value="241">Construction et entretien de tunnels</option><option value="242">Contrôle technique automobile</option><option value="243">Courtage de valeurs mobilières et de marchandises</option><option value="244">Création artistique relevant des arts plastiques</option><option value="245">Crédit-bail</option><option value="246">Cuisson de produits de boulangerie</option><option value="247">Culture d'agrumes</option><option value="248">Culture d'autres fruits d'arbres ou d'arbustes et de fruits à coque</option><option value="249">Culture de céréales (à l'exception du riz), de légumineuses et de graines oléagineuses</option><option value="250">Culture de fruits à pépins et à noyau</option><option value="251">Culture de fruits oléagineux</option><option value="252">Culture de la canne à sucre</option><option value="253">Culture de la vigne</option><option value="254">Culture de légumes, de melons, de racines et de tubercules</option><option value="255">Culture de plantes à boissons</option><option value="256">Culture et élevage associés</option><option value="257">Débits de boissons</option><option value="258">Décolletage</option><option value="259">Découpage, emboutissage</option><option value="260">Démantèlement d'épaves</option><option value="261">Dépollution et autres services de gestion des déchets</option><option value="262">Désinfection, désinsectisation, dératisation</option><option value="263">Distribution d'électricité</option><option value="264">Distribution de combustibles gazeux par conduites</option><option value="265">Distribution de films cinématographiques</option><option value="266">Édition de chaînes généralistes</option><option value="267">Édition de chaînes thématiques</option><option value="268">Édition de jeux électroniques</option><option value="269">Édition de journaux</option><option value="270">Édition de livres</option><option value="271">Édition de logiciels applicatifs</option><option value="272">Édition de logiciels outils de développement et de langages</option><option value="273">Édition de logiciels système et de réseau</option><option value="274">Édition de revues et périodiques</option><option value="275">Édition et diffusion de programmes radio</option><option value="276">Édition et distribution vidéo</option><option value="277">Élaboration et transformation de matières nucléaires</option><option value="278">Élevage d'autres animaux</option><option value="279">Élevage d'autres bovins et de buffles</option><option value="280">Élevage de chevaux et d'autres équidés</option><option value="281">Élevage de porcins</option><option value="282">Élevage de volailles</option><option value="283">Ennoblissement textile</option><option value="284">Enregistrement sonore et édition musicale</option><option value="285">Enrichissement et retraitement de matières nucléaires</option><option value="286">Enseignement culturel</option><option value="287">Enseignement de disciplines sportives et d'activités de loisirs</option><option value="288">Enseignement de la conduite</option><option value="289">Enseignement primaire</option><option value="290">Enseignement secondaire général</option><option value="291">Enseignement supérieur</option><option value="292">Entreposage et stockage frigorifique</option><option value="293">Entreposage et stockage non frigorifique</option><option value="294">Entretien corporel</option><option value="295">Entretien et réparation d'autres véhicules automobiles</option><option value="296">Entretien et réparation de véhicules automobiles légers</option><option value="297">Étirage à froid de barres</option><option value="298">Études de marché et sondages</option><option value="299">Évaluation des risques et dommages</option><option value="300">Exploitation de gravières et sablières, extraction d'argiles et de kaolin</option><option value="301">Exploitation forestière</option><option value="302">Extraction d'autres minerais de métaux non ferreux</option><option value="303">Extraction de gaz naturel</option><option value="304">Extraction de houille</option><option value="305">Extraction de minerais d'uranium et de thorium</option><option value="306">Extraction de minerais de fer</option><option value="307">Extraction de pétrole brut</option><option value="308">Extraction de pierres ornementales et de construction, de calcaire industriel, de gypse, de craie et d'ardoise</option><option value="309">Extraction des minéraux chimiques et d'engrais minéraux</option><option value="310">Fabrication d'aliments homogénéisés et diététiques</option><option value="311">Fabrication d'aliments pour animaux de compagnie</option><option value="312">Fabrication d'aliments pour animaux de ferme</option><option value="313">Fabrication d'appareils d'éclairage électrique</option><option value="314">Fabrication d'appareils électroménagers</option><option value="315">Fabrication d'appareils ménagers non électriques</option><option value="316">Fabrication d'appareils sanitaires en céramique</option><option value="317">Fabrication d'armes et de munitions</option><option value="318">Fabrication d'articles céramiques à usage domestique ou ornemental</option><option value="319">Fabrication d'articles chaussants à mailles</option><option value="320">Fabrication d'articles de bijouterie fantaisie et articles similaires</option><option value="321">Fabrication d'articles de brosserie</option><option value="322">Fabrication d'articles de joaillerie et bijouterie</option><option value="323">Fabrication d'articles de papeterie</option><option value="324">Fabrication d'articles de sport</option><option value="325">Fabrication d'articles de voyage, de maroquinerie et de sellerie</option><option value="326">Fabrication d'articles en fils métalliques, de chaînes et de ressorts</option><option value="327">Fabrication d'articles en fourrure</option><option value="328">Fabrication d'articles en papier à usage sanitaire ou domestique</option><option value="329">Fabrication d'articles métalliques ménagers</option><option value="330">Fabrication d'articles textiles, sauf habillement</option><option value="331">Fabrication d'autres articles à mailles</option><option value="332">Fabrication d'autres articles de robinetterie</option><option value="333">Fabrication d'autres articles en caoutchouc</option><option value="334">Fabrication d'autres articles en papier ou en carton</option><option value="335">Fabrication d'autres articles métalliques</option><option value="336">Fabrication d'autres équipements automobiles</option><option value="337">Fabrication d'autres équipements de transport n.c.a.</option><option value="338">Fabrication d'autres fils et câbles électroniques ou électriques</option><option value="339">Fabrication d'autres machines-outils</option><option value="340">Fabrication d'autres machines d'usage général</option><option value="341">Fabrication d'autres machines spécialisées</option><option value="342">Fabrication d'autres matériels électriques</option><option value="343">Fabrication d'autres meubles et industries connexes de l'ameublement</option><option value="344">Fabrication d'autres outillages</option><option value="345">Fabrication d'autres ouvrages en béton, en ciment ou en plâtre</option><option value="346">Fabrication d'autres pompes et compresseurs</option><option value="347">Fabrication d'autres produits alimentaires n.c.a.</option><option value="348">Fabrication d'autres produits céramiques</option><option value="349">Fabrication d'autres produits céramiques à usage technique</option><option value="350">Fabrication d'autres produits chimiques inorganiques de base n.c.a.</option><option value="351">Fabrication d'autres produits chimiques n.c.a.</option><option value="352">Fabrication d'autres produits chimiques organiques de base</option><option value="353">Fabrication d'autres produits laitiers</option><option value="354">Fabrication d'autres produits minéraux non métalliques n.c.a.</option><option value="355">Fabrication d'autres réservoirs, citernes et conteneurs métalliques</option><option value="356">Fabrication d'autres textiles n.c.a.</option><option value="357">Fabrication d'autres textiles techniques et industriels</option><option value="358">Fabrication d'autres vêtements et accessoires</option><option value="359">Fabrication d'éléments en béton pour la construction</option><option value="360">Fabrication d'éléments en matières plastiques pour la construction</option><option value="361">Fabrication d'éléments en plâtre pour la construction</option><option value="362">Fabrication d'emballages en bois</option><option value="363">Fabrication d'emballages en matières plastiques</option><option value="364">Fabrication d'emballages en papier</option><option value="365">Fabrication d'emballages métalliques légers</option><option value="366">Fabrication d'engrenages et d'organes mécaniques de transmission</option><option value="367">Fabrication d'équipements aérauliques et frigorifiques industriels</option><option value="368">Fabrication d'équipements d'aide à la navigation</option><option value="369">Fabrication d'équipements d'emballage, de conditionnement et de pesage</option><option value="370">Fabrication d'équipements d'irradiation médicale, d'équipements électromédicaux et électrothérapeutiques</option><option value="371">Fabrication d'équipements de communication</option><option value="372">Fabrication d'équipements électriques et électroniques automobiles</option><option value="373">Fabrication d'équipements hydrauliques et pneumatiques</option><option value="374">Fabrication d'étoffes à mailles</option><option value="375">Fabrication d'huiles essentielles</option><option value="376">Fabrication d'huiles et graisses brutes</option><option value="377">Fabrication d'huiles et graisses raffinées</option><option value="378">Fabrication d'instrumentation scientifique et technique</option><option value="379">Fabrication d'instruments de musique</option><option value="380">Fabrication d'objets divers en bois ; fabrication d'objets en liège, vannerie et sparterie</option><option value="381">Fabrication d'ordinateurs et d'équipements périphériques</option><option value="382">Fabrication d'outillage portatif à moteur incorporé</option><option value="383">Fabrication d'ouvrages en fibre-ciment</option><option value="384">Fabrication de béton prêt à l'emploi</option><option value="385">Fabrication de bicyclettes et de véhicules pour invalides</option><option value="386">Fabrication de bière</option><option value="387">Fabrication de biscuits, biscottes et pâtisseries de conservation</option><option value="388">Fabrication de briques, tuiles et produits de construction, en terre cuite</option><option value="389">Fabrication de câbles de fibres optiques</option><option value="390">Fabrication de cacao, chocolat et de produits de confiserie</option><option value="391">Fabrication de caoutchouc synthétique</option><option value="392">Fabrication de carreaux en céramique</option><option value="393">Fabrication de carrosseries et remorques</option><option value="394">Fabrication de cartes électroniques assemblées</option><option value="395">Fabrication de carton ondulé</option><option value="396">Fabrication de cartonnages</option><option value="397">Fabrication de charpentes et d'autres menuiseries</option><option value="398">Fabrication de chaussures</option><option value="399">Fabrication de chaux et plâtre</option><option value="400">Fabrication de cidre et de vins de fruits</option><option value="401">Fabrication de ciment</option><option value="402">Fabrication de colles</option><option value="403">Fabrication de colorants et de pigments</option><option value="404">Fabrication de composants électroniques</option><option value="405">Fabrication de condiments et assaisonnements</option><option value="406">Fabrication de coutellerie</option><option value="407">Fabrication de fibres artificielles ou synthétiques</option><option value="408">Fabrication de fibres de verre</option><option value="409">Fabrication de ficelles, cordes et filets</option><option value="410">Fabrication de fours et brûleurs</option><option value="411">Fabrication de fromage</option><option value="412">Fabrication de gaz industriels</option><option value="413">Fabrication de générateurs de vapeur, à l'exception des chaudières pour le chauffage central</option><option value="414">Fabrication de glaces et sorbets</option><option value="415">Fabrication de jeux et jouets</option><option value="416">Fabrication de lait liquide et de produits frais</option><option value="417">Fabrication de lunettes</option><option value="418">Fabrication de machines-outils pour le travail des métaux</option><option value="419">Fabrication de machines agricoles et forestières</option><option value="420">Fabrication de machines d'imprimerie</option><option value="421">Fabrication de machines et d'équipements de bureau (à l'exception des ordinateurs et équipements périphériques)</option><option value="422">Fabrication de machines pour l'extraction ou la construction</option><option value="423">Fabrication de machines pour l'industrie agro-alimentaire</option><option value="424">Fabrication de machines pour la métallurgie</option><option value="425">Fabrication de machines pour le travail du caoutchouc ou des plastiques</option><option value="426">Fabrication de machines pour les industries du papier et du carton</option><option value="427">Fabrication de machines pour les industries textiles</option><option value="428">Fabrication de malt</option><option value="429">Fabrication de margarine et graisses comestibles similaires</option><option value="430">Fabrication de matelas</option><option value="431">Fabrication de matériel d'installation électrique</option><option value="432">Fabrication de matériel de distribution et de commande électrique</option><option value="433">Fabrication de matériel de levage et de manutention</option><option value="434">Fabrication de matériel médico-chirurgical et dentaire</option><option value="435">Fabrication de matériels optique et photographique</option><option value="436">Fabrication de matières plastiques de base</option><option value="437">Fabrication de meubles de bureau et de magasin</option><option value="438">Fabrication de meubles de cuisine</option><option value="439">Fabrication de mortiers et bétons secs</option><option value="440">Fabrication de moteurs et turbines, à l'exception des moteurs d'avions et de véhicules</option><option value="441">Fabrication de moteurs, génératrices et transformateurs électriques</option><option value="442">Fabrication de motocycles</option><option value="443">Fabrication de moules et modèles</option><option value="444">Fabrication de non-tissés, sauf habillement</option><option value="445">Fabrication de papier et de carton</option><option value="446">Fabrication de papiers peints</option><option value="447">Fabrication de parfums et de produits pour la toilette</option><option value="448">Fabrication de parquets assemblés</option><option value="449">Fabrication de pâte à papier</option><option value="450">Fabrication de pâtes alimentaires</option><option value="451">Fabrication de peintures, vernis, encres et mastics</option><option value="452">Fabrication de pesticides et d'autres produits agrochimiques</option><option value="453">Fabrication de pièces techniques à base de matières plastiques</option><option value="454">Fabrication de piles et d'accumulateurs électriques</option><option value="455">Fabrication de placage et de panneaux de bois</option><option value="456">Fabrication de plaques, feuilles, tubes et profilés en matières plastiques</option><option value="457">Fabrication de plats préparés</option><option value="458">Fabrication de portes et fenêtres en métal</option><option value="459">Fabrication de préparations pharmaceutiques</option><option value="460">Fabrication de produits à base de tabac</option><option value="461">Fabrication de produits abrasifs</option><option value="462">Fabrication de produits amylacés</option><option value="463">Fabrication de produits azotés et d'engrais</option><option value="464">Fabrication de produits de consommation courante en matières plastiques</option><option value="465">Fabrication de produits électroniques grand public</option><option value="466">Fabrication de produits pharmaceutiques de base</option><option value="467">Fabrication de produits réfractaires</option><option value="468">Fabrication de radiateurs et de chaudières pour le chauffage central</option><option value="469">Fabrication de savons, détergents et produits d'entretien</option><option value="470">Fabrication de serrures et de ferrures</option><option value="471">Fabrication de sièges d'ameublement d'intérieur</option><option value="472">Fabrication de structures métalliques et de parties de structures</option><option value="473">Fabrication de sucre</option><option value="474">Fabrication de supports magnétiques et optiques</option><option value="475">Fabrication de tapis et moquettes</option><option value="476">Fabrication de tubes, tuyaux, profilés creux et accessoires correspondants en acier</option><option value="477">Fabrication de verre creux</option><option value="478">Fabrication de verre plat</option><option value="479">Fabrication de vêtements de dessous</option><option value="480">Fabrication de vêtements de dessus</option><option value="481">Fabrication de vêtements de travail</option><option value="482">Fabrication de vêtements en cuir</option><option value="483">Fabrication de vis et de boulons</option><option value="484">Fabrication et façonnage d'autres articles en verre, y compris verre technique</option><option value="485">Fabrication et rechapage de pneumatiques</option><option value="486">Fabrication industrielle de pain et de pâtisserie fraîche</option><option value="487">Façonnage et transformation du verre plat</option><option value="488">Fonderie d'acier</option><option value="489">Fonderie d'autres métaux non ferreux</option><option value="490">Fonderie de fonte</option><option value="491">Fonderie de métaux légers</option><option value="492">Fonds de placement et entités financières similaires</option><option value="493">Forages et sondages</option><option value="494">Forge, estampage, matriçage ; métallurgie des poudres</option><option value="495">Formation continue d'adultes</option><option value="496">Frappe de monnaie</option><option value="497">Gestion d'installations informatiques</option><option value="498">Gestion d'installations sportives</option><option value="499">Gestion de fonds</option><option value="500">Gestion de salles de spectacles</option><option value="501">Gestion des bibliothèques et des archives</option><option value="502">Gestion des jardins botaniques et zoologiques et des réserves naturelles</option><option value="503">Gestion des musées</option><option value="504">Gestion des retraites complémentaires</option><option value="505">Gestion des sites et monuments historiques et des attractions touristiques similaires</option><option value="506">Grands magasins</option><option value="507">Hébergement médicalisé pour adultes handicapés et autre hébergement médicalisé</option><option value="508">Hébergement médicalisé pour personnes âgées</option><option value="509">Hébergement social pour adultes et familles en difficultés et autre hébergement social</option><option value="510">Hébergement social pour enfants en difficultés</option><option value="511">Hébergement social pour handicapés mentaux et malades mentaux</option><option value="512">Hébergement social pour personnes âgées</option><option value="513">Hébergement touristique et autre hébergement de courte durée</option><option value="514">Horlogerie</option><option value="515">Hôtels et hébergement similaire</option><option value="516">Hypermarchés</option><option value="517">Imprégnation du bois</option><option value="518">Imprimerie de journaux</option><option value="519">Industrie des eaux de table</option><option value="520">Ingénierie, études techniques</option><option value="521">Installation d'équipements électriques, de matériels électroniques et optiques ou d'autres matériels</option><option value="522">Installation de machines et équipements mécaniques</option><option value="523">Installation de structures métalliques, chaudronnées et de tuyauterie</option><option value="524">Intermédiaires du commerce en bois et matériaux de construction</option><option value="525">Intermédiaires du commerce en machines, équipements industriels, navires et avions</option><option value="526">Intermédiaires du commerce en matières premières agricoles, animaux vivants, matières premières textiles et produits semi-finis</option><option value="527">Intermédiaires du commerce en meubles, articles de ménage et quincaillerie</option><option value="528">Intermédiaires du commerce en textiles, habillement, fourrures, chaussures et articles en cuir</option><option value="529">Intermédiaires spécialisés dans le commerce d'autres produits spécifiques</option><option value="530">Laboratoires d'analyses médicales</option><option value="531">Laminage à froid de feuillards</option><option value="532">Location-bail de propriété intellectuelle et de produits similaires, à l'exception des œuvres soumises à copyright</option><option value="533">Location avec opérateur de matériel de construction</option><option value="534">Location de camions avec chauffeur</option><option value="535">Location de courte durée de voitures et de véhicules automobiles légers</option><option value="536">Location de logements</option><option value="537">Location de longue durée de voitures et de véhicules automobiles légers</option><option value="538">Location de terrains et d'autres biens immobiliers</option><option value="539">Location et location-bail d'articles de loisirs et de sport</option><option value="540">Location et location-bail d'autres biens personnels et domestiques</option><option value="541">Location et location-bail d'autres machines, équipements et biens matériels n.c.a.</option><option value="542">Location et location-bail de camions</option><option value="543">Location et location-bail de machines de bureau et de matériel informatique</option><option value="544">Location et location-bail de machines et équipements agricoles</option><option value="545">Location et location-bail de machines et équipements pour la construction</option><option value="546">Location et location-bail de matériels de transport aérien</option><option value="547">Location et location-bail de matériels de transport par eau</option><option value="548">Manutention non portuaire</option><option value="549">Manutention portuaire</option><option value="550">Mécanique industrielle</option><option value="551">Messagerie, fret express</option><option value="552">Métallurgie de l'aluminium</option><option value="553">Métallurgie des autres métaux non ferreux</option><option value="554">Métallurgie du cuivre</option><option value="555">Métallurgie du plomb, du zinc ou de l'étain</option><option value="556">Meunerie</option><option value="557">Nettoyage courant des bâtiments</option><option value="558">Organisation de foires, salons professionnels et congrès</option><option value="559">Organisation de jeux de hasard et d'argent</option><option value="560">Pâtisserie</option><option value="561">Pêche en mer</option><option value="562">Photocopie, préparation de documents et autres activités spécialisées de soutien de bureau</option><option value="563">Portails Internet</option><option value="564">Post-production de films cinématographiques, de vidéo et de programmes de télévision</option><option value="565">Pratique dentaire</option><option value="566">Préparation de fibres textiles et filature</option><option value="567">Préparation de jus de fruits et légumes</option><option value="568">Préparation industrielle de produits à base de viande</option><option value="569">Production d'électricité</option><option value="570">Production de boissons alcooliques distillées</option><option value="571">Production de boissons rafraîchissantes</option><option value="572">Production de combustibles gazeux</option><option value="573">Production de films et de programmes pour la télévision</option><option value="574">Production de films institutionnels et publicitaires</option><option value="575">Production de films pour le cinéma</option><option value="576">Production de métaux précieux</option><option value="577">Production de sel</option><option value="578">Production et distribution de vapeur et d'air conditionné</option><option value="579">Profilage à froid par formage ou pliage</option><option value="580">Programmation informatique</option><option value="581">Projection de films cinématographiques</option><option value="582">Promotion immobilière d'autres bâtiments</option><option value="583">Promotion immobilière de bureaux</option><option value="584">Promotion immobilière de logements</option><option value="585">Raffinage du pétrole</option><option value="586">Réassurance</option><option value="587">Recherche-développement en autres sciences physiques et naturelles</option><option value="588">Recherche-développement en biotechnologie</option><option value="589">Recherche-développement en sciences humaines et sociales</option><option value="590">Récupération de déchets triés</option><option value="591">Régie publicitaire de médias</option><option value="592">Reliure et activités connexes</option><option value="593">Réparation d'appareils électroménagers et d'équipements pour la maison et le jardin</option><option value="594">Réparation d'autres biens personnels et domestiques</option><option value="595">Réparation d'autres équipements</option><option value="596">Réparation d'équipements de communication</option><option value="597">Réparation d'équipements électriques</option><option value="598">Réparation d'ordinateurs et d'équipements périphériques</option><option value="599">Réparation d'ouvrages en métaux</option><option value="600">Réparation de chaussures et d'articles en cuir</option><option value="601">Réparation de machines et équipements mécaniques</option><option value="602">Réparation de matériels électroniques et optiques</option><option value="603">Réparation de meubles et d'équipements du foyer</option><option value="604">Réparation de produits électroniques grand public</option><option value="605">Réparation et maintenance d'aéronefs et d'engins spatiaux</option><option value="606">Réparation et maintenance d'autres équipements de transport</option><option value="607">Réparation et maintenance navale</option><option value="608">Reproduction d'enregistrements</option><option value="609">Reproduction de plantes</option><option value="610">Restauration collective sous contrat</option><option value="611">Restauration de type rapide</option><option value="612">Restauration traditionnelle</option><option value="613">Sciage et rabotage du bois, hors imprégnation</option><option value="614">Services administratifs combinés de bureau</option><option value="615">Services auxiliaires des transports aériens</option><option value="616">Services auxiliaires des transports par eau</option><option value="617">Services auxiliaires des transports terrestres</option><option value="618">Services d'aménagement paysager</option><option value="619">Services de déménagement</option><option value="620">Services de soutien à l'exploitation forestière</option><option value="621">Services des traiteurs</option><option value="622">Services du feu et de secours</option><option value="623">Services funéraires</option><option value="624">Sidérurgie</option><option value="625">Soins de beauté</option><option value="626">Supérettes</option><option value="627">Supermarchés</option><option value="628">Supports juridiques de gestion de patrimoine immobilier</option><option value="629">Supports juridiques de gestion de patrimoine mobilier</option><option value="630">Supports juridiques de programmes</option><option value="631">Sylviculture et autres activités forestières</option><option value="632">Taille, façonnage et finissage de pierres</option><option value="633">Télécommunications filaires</option><option value="634">Télécommunications par satellite</option><option value="635">Télécommunications sans fil</option><option value="636">Téléphériques et remontées mécaniques</option><option value="637">Terrains de camping et parcs pour caravanes ou véhicules de loisirs</option><option value="638">Tierce maintenance de systèmes et d'applications informatiques</option><option value="639">Tissage</option><option value="640">Traduction et interprétation</option><option value="641">Traitement de données, hébergement et activités connexes</option><option value="642">Traitement des semences</option><option value="643">Traitement et élimination des déchets dangereux</option><option value="644">Traitement et élimination des déchets non dangereux</option><option value="645">Traitement et revêtement des métaux</option><option value="646">Transformation du thé et du café</option><option value="647">Transformation et conservation de fruits</option><option value="648">Transformation et conservation de la viande de boucherie</option><option value="649">Transformation et conservation de la viande de volaille</option><option value="650">Transformation et conservation de poisson, de crustacés et de mollusques</option><option value="651">Transformation et conservation de pommes de terre</option><option value="652">Transport ferroviaire interurbain de voyageurs</option><option value="653">Transports aériens de fret</option><option value="654">Transports aériens de passagers</option><option value="655">Transports de voyageurs par taxis</option><option value="656">Transports ferroviaires de fret</option><option value="657">Transports fluviaux de fret</option><option value="658">Transports fluviaux de passagers</option><option value="659">Transports maritimes et côtiers de fret</option><option value="660">Transports maritimes et côtiers de passagers</option><option value="661">Transports par conduites</option><option value="662">Transports routiers de fret de proximité</option><option value="663">Transports routiers de fret interurbains</option><option value="664">Transports routiers réguliers de voyageurs</option><option value="665">Transports spatiaux</option><option value="666">Transports urbains et suburbains de voyageurs</option><option value="667">Travaux d'étanchéification</option><option value="668">Travaux d'installation d'eau et de gaz en tous locaux</option><option value="669">Travaux d'installation d'équipements thermiques et de climatisation</option><option value="670">Travaux d'installation électrique dans tous locaux</option><option value="671">Travaux d'installation électrique sur la voie publique</option><option value="672">Travaux d'isolation</option><option value="673">Travaux de charpente</option><option value="674">Travaux de couverture par éléments</option><option value="675">Travaux de démolition</option><option value="676">Travaux de maçonnerie générale et gros œuvre de bâtiment</option><option value="677">Travaux de menuiserie bois et PVC</option><option value="678">Travaux de menuiserie métallique et serrurerie</option><option value="679">Travaux de montage de structures métalliques</option><option value="680">Travaux de peinture et vitrerie</option><option value="681">Travaux de plâtrerie</option><option value="682">Travaux de revêtement des sols et des murs</option><option value="683">Travaux de terrassement courants et travaux préparatoires</option><option value="684">Travaux de terrassement spécialisés ou de grande masse</option><option value="685">Tréfilage à froid</option><option value="686">Unknown</option><option value="687">Vente à distance sur catalogue général</option><option value="688">Vente à distance sur catalogue spécialisé</option><option value="689">Vente à domicile</option><option value="690">Vente par automates et autres commerces de détail hors magasin, éventaires ou marchés n.c.a.</option><option value="691">Vinification</option><option value="692">Accueil ou accompagnement sans hébergement d'enfants handicapés</option><option value="693">Activités d'ordre public et de sécurité</option><option value="694">Activités générales de sécurité sociale</option><option value="695">Ambulances</option><option value="696">Culture de plantes à épices, aromatiques, médicinales et pharmaceutiques</option><option value="697">Culture du tabac</option><option value="698">Distribution sociale de revenus</option><option value="699">Édition de répertoires et de fichiers d'adresses</option><option value="700">Élevage d'ovins et de caprins</option><option value="701">Élevage de vaches laitières</option><option value="702">Enseignement pré-primaire</option><option value="703">Enseignement secondaire technique ou professionnel</option><option value="704">Fabrication de beurre</option><option value="705">Fabrication de produits explosifs</option><option value="706">Fabrication de vins effervescents</option><option value="707">Hébergement médicalisé pour enfants handicapés</option><option value="708">Hébergement social pour handicapés physiques</option><option value="709">Justice</option><option value="710">Location de vidéocassettes et disques vidéo</option><option value="711">Magasins multi-commerces</option><option value="712">Pêche en eau douce</option><option value="713">Récolte de produits forestiers non ligneux poussant à l'état sauvage</option><option value="714">Réparation d'articles d'horlogerie et de bijouterie</option><option value="715">Traitement primaire des récoltes</option><option value="716">Transport d'électricité</option><option value="717">Hébergement social pour toxicomanes</option><option value="718">Production d'autres boissons fermentées non distillées</option><option value="719">Élevage de chameaux et d'autres camélidés</option><option value="720">Culture de fruits tropicaux et subtropicaux</option><option value="721">Culture de plantes à fibres</option><option value="722">Enseignement post-secondaire non supérieur</option><option value="723">Fabrication de fûts et emballages métalliques similaires</option><option value="724">Extraction de tourbe</option><option value="725">Culture du riz</option><option value="726">Construction de véhicules militaires de combat</option><option value="727">Fabrication d'isolateurs et pièces isolantes en céramique</option><option value="728">Défense</option><option value="729">Cokéfaction</option></select><!--/html_preserve--><!--html_preserve--><button type="submit" id="idsubmit" class="btn btn-default">GO!</button><!--/html_preserve--></p>
+
+<!--html_preserve-->
+<div id="plotdiv" style="height: 550px"></div>
+<!--/html_preserve-->
+
+<script> 
+
+$(function(){
+
+  var act_id = 1;
+
+  var req = $("#plotdiv").rplot("display_activity", {activity_to_display : act_id});
+
+  $("#idsubmit").click(function(e){
+  
+  var act_id = $("#myid").val();
+  
+    var req = $("#plotdiv").rplot("display_activity", {activity_to_display : act_id});
+
+  });
+
+});
+  
+</script>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://yvescr.github.io/tags/#js" class="page__taxonomy-item" rel="tag">js</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://yvescr.github.io/tags/#opencpu" class="page__taxonomy-item" rel="tag">opencpu</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://yvescr.github.io/tags/#package" class="page__taxonomy-item" rel="tag">package</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://yvescr.github.io/tags/#r" class="page__taxonomy-item" rel="tag">R</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://yvescr.github.io/categories/#hack" class="page__taxonomy-item" rel="tag">hack</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-02-23T00:00:00+00:00">February 23, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=SwiftAMHE&text=Cartographie des activités francaises par département(French article) https://yvescr.github.io/hack/Article_embeded_map_choice/" class="btn btn--twitter" title="Share on Twitter"><i class="fa fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https://yvescr.github.io/hack/Article_embeded_map_choice/" class="btn btn--facebook" title="Share on Facebook"><i class="fa fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=https://yvescr.github.io/hack/Article_embeded_map_choice/" class="btn btn--google-plus" title="Share on Google Plus"><i class="fa fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://yvescr.github.io/hack/Article_embeded_map_choice/" class="btn btn--linkedin" title="Share on LinkedIn"><i class="fa fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="https://yvescr.github.io/data%20visualisation/google_map_our_article/" class="pagination--pager" title="Visualisation of my Google Map History
+">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+    <h4 class="page__comments-title">Leave a Comment</h4>
+    <section id="disqus_thread"></section>
+  
+</div>
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      
+        <h4 class="page__related-title">You May Also Enjoy</h4>
+      
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://yvescr.github.io/assets/images/The_Great_Wave_off_Kanagawa.jpg"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://yvescr.github.io/data%20visualisation/google_map_our_article/" rel="permalink">Visualisation of my Google Map History
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Jan 15, 2017  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  15 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Exploration of the localisation data created when using google map
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://yvescr.github.io/assets/images/TheRapeofEuropa.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://yvescr.github.io/hack/embedocputest/" rel="permalink">Include R Output in your Blog Pages with Opencpu
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Nov 27, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  1 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">Short exemple of how to include R output in a blog post with opencpu
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://yvescr.github.io/assets/images/flexocpu.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://yvescr.github.io/r/Flexocpu/" rel="permalink">Dashboarding with Flexdashboard and Opencpu
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Oct 31, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  6 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">How to use opencpu as a back end for flexdashboard
+</p>
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src=
+          
+            "https://yvescr.github.io/assets/images/earl.png"
+          
+          alt="">
+      </div>
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="https://yvescr.github.io/earl/EARL_2016_review/" rel="permalink">EARL 2016 Review
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Sep 20, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+ </p>
+	        
+    <p class="archive__item-excerpt" itemprop="description">EARL 2016 review
+</p>
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/SwiftAMHE"><i class="fa fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="http://github.com/YvesCR"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    <li><a href="https://yvescr.github.io/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2017 Yves Crutain. Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+      </footer>
+    </div>
+
+    <script src="https://yvescr.github.io/assets/js/main.min.js"></script>
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71940303-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+  	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  	var disqus_shortname = 'datalaborereu';
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function() {
+  		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  	})();
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function () {
+  		var s = document.createElement('script'); s.async = true;
+  		s.type = 'text/javascript';
+  		s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  		(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+  	}());
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+
+
+  </body>
+</html>
