@@ -47,8 +47,8 @@
     <meta itemprop="datePublished" content="September 09, 2015">       
     <div class="page__inner-wrap">                <header> 
           <h1 class="page__title" itemprop="headline">Messing with T-distributed stochastic neighbor embedding 
-</h1>                        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i>   
-     12 minute read </p>                    </header>         
+</h1>                        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i>  
+      12 minute read </p>                    </header>         
       <section class="page__content" itemprop="text">         <head>  <meta charset="utf-8"> 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 <meta name="generator" content="pandoc" />   
@@ -70,7 +70,8 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
   max-width:100%;    height: auto;  } </style> <div class="container-fluid main-container">  
 <p>Recently, Kaggle launch the scripts project, which is a board of scripts released by competitioners with possibilites of evaluations by peers.</p> 
 <p>One of the script is a scatterplot obtained through t-distributed stochastic neighbor embedding which summarise the information of a huge data set.</p> 
-<p>The scatterplot was so self explaining that I wanted to explore that method.</p> <h3> Theory </h3> 
+<p>The scatterplot was so self explaining that I wanted to explore that method.</p> <h3> Theory 
+</h3> 
 <p>The theory is not that complicated after you catch the idea behind. The original paper is <a href="http://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf">this one</a>.</p> 
 <p>t-SNE is mainly used to visualise huge data set into scatterplot. It reduces the dimensionality of data to 2 or 3 dimensions, allowing to do 2d or 3d plot.</p> 
 <p>t-SNE converts distances between datapoint in the original space into conditionnal probabilities <span class="math">\(p_{j|i}\)</span>.</p> 
@@ -87,8 +88,8 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>The package <code>Rtsne</code> have one function, <code>Rtsne()</code>. To note:</p> 
 <ul style="square"> <li> The function does not allow duplicates </li> <li> 
 The SNE result is fairly robust to change in perplexity. Classic values are between 5 and 50 </li> 
-<li> By defaut, an initial pca is made to reduce the number of dimensions before to do the SNE. </li> 
-<li> 
+<li> By defaut, an initial pca is made to reduce the number of dimensions before to do the SNE. 
+</li> <li> 
 There is no normalisation made. Consequently, a variable with huge value will appear well separated. 
 </li> <li> The algorithm accept only numeric variables. </li> <ul style="circle"> <li> 
 Consequently, I personnaly like to divide my dummie variable by the number of modality. </li> <li> 
@@ -253,6 +254,26 @@ ggplot(data = titanic.train2, aes(x = x.rtsne, y = y.rtsne, color = flg.emb.q)) 
       <div class="grid__wrapper">                        <div class="grid__item"> 
   <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">      
       <div class="archive__item-teaser">         <img src=            
+            "https://yvescr.github.io/assets/images/Eugene_Ivanov_2091.jpg"            
+          alt="">       </div>          <h2 class="archive__item-title" itemprop="headline">        
+        <a href="https://yvescr.github.io/hack/Article_embeded_map_choice/" rel="permalink">Cartographie des activités francaises par département(French article) 
+</a>            </h2>      
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Feb 25, 2017  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i>  
+      38 minute read  </p> 	         
+    <p class="archive__item-excerpt" itemprop="description">An API to map french activity by department 
+</p>   </article> </div>                        <div class="grid__item"> 
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">      
+      <div class="archive__item-teaser">         <img src=            
+            "https://yvescr.github.io/assets/images/Eugene_Ivanov_2091.jpg"            
+          alt="">       </div>          <h2 class="archive__item-title" itemprop="headline">        
+        <a href="https://yvescr.github.io/hack/Article_embeded_map_choice/" rel="permalink">Cartographie des activités francaises par département(French article) 
+</a>            </h2>      
+      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Feb 23, 2017  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i>  
+      38 minute read  </p> 	         
+    <p class="archive__item-excerpt" itemprop="description">An API to map french activity by department 
+</p>   </article> </div>                        <div class="grid__item"> 
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">      
+      <div class="archive__item-teaser">         <img src=            
             "https://yvescr.github.io/assets/images/The_Great_Wave_off_Kanagawa.jpg"            
           alt="">       </div>          <h2 class="archive__item-title" itemprop="headline">        
         <a href="https://yvescr.github.io/data%20visualisation/google_map_our_article/" rel="permalink">Visualisation of my Google Map History 
@@ -263,35 +284,15 @@ ggplot(data = titanic.train2, aes(x = x.rtsne, y = y.rtsne, color = flg.emb.q)) 
 </p>   </article> </div>                        <div class="grid__item"> 
   <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">      
       <div class="archive__item-teaser">         <img src=            
-            "https://yvescr.github.io/assets/images/TheRapeofEuropa.png"                      alt=""> 
-      </div>          <h2 class="archive__item-title" itemprop="headline">        
+            "https://yvescr.github.io/assets/images/TheRapeofEuropa.png"            
+          alt="">       </div>          <h2 class="archive__item-title" itemprop="headline">        
         <a href="https://yvescr.github.io/hack/embedocputest/" rel="permalink">Include R Output in your Blog Pages with Opencpu 
 </a>            </h2>      
       <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Nov 27, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i>  
       1 minute read  </p> 	         
     <p class="archive__item-excerpt" itemprop="description">Short exemple of how to include R output in a blog post with opencpu 
-</p>   </article> </div>                        <div class="grid__item"> 
-  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">      
-      <div class="archive__item-teaser">         <img src=            
-            "https://yvescr.github.io/assets/images/flexocpu.png"                      alt=""> 
-      </div>          <h2 class="archive__item-title" itemprop="headline">        
-        <a href="https://yvescr.github.io/r/Flexocpu/" rel="permalink">Dashboarding with Flexdashboard and Opencpu 
-</a>            </h2>      
-      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Oct 31, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i>  
-      7 minute read  </p> 	         
-    <p class="archive__item-excerpt" itemprop="description">How to use opencpu as a back end for flexdashboard 
-</p>   </article> </div>                        <div class="grid__item"> 
-  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">      
-      <div class="archive__item-teaser">         <img src=            
-            "https://yvescr.github.io/assets/images/earl.png"                      alt=""> 
-      </div>          <h2 class="archive__item-title" itemprop="headline">        
-        <a href="https://yvescr.github.io/earl/EARL_2016_review/" rel="permalink">EARL 2016 Review 
-</a>            </h2>      
-      <p class="page__meta"><i class="fa fa-calendar-o" aria-hidden="true"></i> Sep 20, 2016  &nbsp; <i class="fa fa-clock-o" aria-hidden="true"></i>  
-      12 minute read  </p> 	         
-    <p class="archive__item-excerpt" itemprop="description">EARL 2016 review </p>   </article> </div> 
-               </div>     </div>    </div>      <div class="page__footer">       <footer> 
-        <!-- start custom footer snippets -->  <!-- end custom footer snippets --> 
+</p>   </article> </div>                </div>     </div>    </div>      <div class="page__footer"> 
+      <footer>         <!-- start custom footer snippets -->  <!-- end custom footer snippets --> 
         <div class="page__footer-follow">   <ul class="social-icons">      
       <li><strong>Follow:</strong></li>           
       <li><a href="https://twitter.com/SwiftAMHE"><i class="fa fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li> 
