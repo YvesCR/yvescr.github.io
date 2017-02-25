@@ -18,6 +18,6 @@ get_rid_js <- function(x) {
   cat(art, file=paste0("../yvescr.github.io/", x, "/index.html"), quote = F, fill=T)
 }
 
-lapply(X = c("hack/embedocputest", "hack/Presentation_of_the_Ropencorporate_package",
+lapply(X = c("hack/embedocputest", "hack/Article_embeded_map_choice", "hack/Presentation_of_the_Ropencorporate_package",
         "hack/Second_ropencorporate_pckg", "data visualisation/MapUKpartI", "Statistic/RTNSE_blog"),
        FUN = get_rid_js)
