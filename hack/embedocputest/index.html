@@ -106,8 +106,9 @@
 </span><span class="n">htmltools</span><span class="o">::</span><span class="n">tags</span><span class="o">$</span><span class="n">button</span><span class="p">(</span><span class="s2">"Update dashboard!"</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s2">"submit"</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="s2">"idsubmit"</span><span class="p">,</span><span class="w"> </span><span class="n">class</span><span class="o">=</span><span class="s2">"btn btn-default"</span><span class="p">)</span></code></pre></figure> 
  
 <figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">htmltools</span><span class="o">::</span><span class="n">tags</span><span class="o">$</span><span class="n">div</span><span class="p">(</span><span class="n">id</span><span class="o">=</span><span class="s2">"plotdiv"</span><span class="p">,</span><span class="w"> </span><span class="n">style</span><span class="o">=</span><span class="s2">"height: 270px"</span><span class="p">)</span></code></pre></figure> 
- <script>   $(function(){    $('container-fluid main-container').css({'visibility': 'visible'});    
-  var paramid = 1;    var req = $("#plotdiv").rplot("plotind", {id : Number(paramid)});  
+ <script src="https://cdn.opencpu.org/opencpu-0.4.js"></script>  <script>   $(function(){  
+  $('container-fluid main-container').css({'visibility': 'visible'});      var paramid = 1;  
+  var req = $("#plotdiv").rplot("plotind", {id : Number(paramid)});  
   var req2 = ocpu.rpc("gethowel", {id : Number(paramid)}, 
       function(output){ console.log(output)});    $("#idsubmit").click(function(e){    
   var paramid = $("#myid").val();    
